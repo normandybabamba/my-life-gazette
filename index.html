@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Life Gazette">
@@ -13,189 +13,238 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --white:#ffffff;--parchment:#f5f5f7;--pearl:#fafafc;
-  --tile1:#272729;--ink:#1d1d1f;--ink80:#333333;--ink48:#7a7a7a;--muted:#cccccc;
-  --blue:#0066cc;--blue-dark:#2997ff;--hairline:#e0e0e0;
+  --white:#fff;--parchment:#f5f5f7;
+  --ink:#1d1d1f;--ink48:#7a7a7a;--muted:#ccc;
+  --tile1:#272729;
+  --blue:#0066cc;--hairline:#e0e0e0;
   --green:#1a6b1a;--red:#cc2200;--orange:#b45000;--gold:#8a6d00;
   --sans:'Inter',system-ui,-apple-system,sans-serif;
   --nanum:'Nanum Myeongjo',serif;
 }
-html,body{height:100%;background:var(--parchment)}
-body{font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;overflow:hidden}
-@media(min-width:768px){html,body{overflow:auto}.main-wrap{overflow:auto;height:auto;flex:1}.tab{height:auto;min-height:60vh}}
+body{
+  font-family:var(--sans);color:var(--ink);
+  background:var(--parchment);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
 
-.global-nav{background:#000;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
-.nav-logo{font-size:20px;font-weight:600;color:#fff;letter-spacing:-0.3px}
-.nav-right{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
-.sync-status{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:-0.1px;white-space:nowrap}
-.sync-status.ok{color:#7ecf7e}.sync-status.err{color:#ff6b6b}
-.nav-btn-sm{font-size:13px;font-weight:400;background:var(--ink);color:#fff;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;transition:transform .1s;white-space:nowrap}
-.nav-btn-sm:active{transform:scale(0.95)}
-.nav-btn-sm.ghost{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff}
-#g-signin-btn{transform:scale(0.8);transform-origin:right center}
+/* NAV */
+.global-nav{
+  background:#000;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;
+  position:sticky;top:0;z-index:200;
+}
+.nav-logo{font-size:18px;font-weight:600;color:#fff;letter-spacing:-0.3px}
+.nav-right{display:flex;align-items:center;gap:8px}
+.sync-status{font-size:12px;color:rgba(255,255,255,0.55);white-space:nowrap}
+.sync-status.ok{color:#7ecf7e}
+.sync-status.err{color:#ff6b6b}
+.nav-btn-sm{font-size:12px;background:#1d1d1f;color:#fff;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.nav-btn-sm.ghost{background:transparent;border:1px solid rgba(255,255,255,0.3)}
+#g-signin-btn{transform:scale(0.78);transform-origin:right center}
 
-.sub-nav{background:rgba(245,245,247,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:0.5px solid var(--hairline);height:52px;display:flex;align-items:center;padding:0 16px;gap:4px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+/* SUB NAV */
+.sub-nav{
+  background:rgba(245,245,247,0.92);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:0.5px solid var(--hairline);
+  height:48px;
+  display:flex;align-items:center;
+  padding:0 12px;gap:2px;
+  position:sticky;top:52px;z-index:199;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
 .sub-nav::-webkit-scrollbar{display:none}
-.sub-tab{font-size:17px;font-weight:600;color:var(--ink48);border:none;background:transparent;padding:8px 14px;border-radius:9999px;cursor:pointer;white-space:nowrap;letter-spacing:-0.374px;transition:all .15s;flex-shrink:0}
+.sub-tab{
+  font-size:15px;font-weight:600;color:var(--ink48);
+  border:none;background:transparent;
+  padding:7px 14px;border-radius:9999px;
+  cursor:pointer;white-space:nowrap;
+  letter-spacing:-0.2px;
+  transition:all .15s;flex-shrink:0;
+}
 .sub-tab.active{background:var(--blue);color:#fff}
-.sub-tab:not(.active):hover{background:rgba(0,0,0,0.06)}
+.sub-tab:hover:not(.active){background:rgba(0,0,0,0.06)}
 
-.main-wrap{flex:1;overflow:hidden;position:relative}
-.tab{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* TABS */
+.tab{display:none;padding:18px 16px 80px}
 .tab.active{display:block}
-@media(min-width:600px){html,body{overflow:auto;height:auto}.main-wrap{flex:none;overflow:visible;height:auto}.tab{display:none;height:auto;min-height:0;overflow-y:visible}.tab.active{display:block}}
-.tile{padding:20px 18px 80px}
-.tile-parchment{background:var(--parchment)}
+
+/* LOGO */
+.logo-box{
+  background:#000;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  padding:28px 0;margin-bottom:18px;
+}
 
 /* TYPOGRAPHY */
-.display-md{font-size:28px;font-weight:600;letter-spacing:-0.374px;line-height:1.14;margin-bottom:6px}
-.sec-title{font-size:20px;font-weight:600;letter-spacing:-0.374px}
-.sec-title-sm{font-size:17px;font-weight:600;letter-spacing:-0.374px}
-.body-text{font-size:17px;letter-spacing:-0.374px;line-height:1.47}
-.caption{font-size:14px;letter-spacing:-0.224px;color:var(--ink48)}
+.display-md{font-size:26px;font-weight:600;letter-spacing:-0.374px;line-height:1.14;margin-bottom:6px}
+.sec-title{font-size:19px;font-weight:600;letter-spacing:-0.374px}
+.sec-title-sm{font-size:16px;font-weight:600;letter-spacing:-0.374px}
+.caption{font-size:13px;letter-spacing:-0.2px;color:var(--ink48)}
 
 /* CARDS */
-.card{background:var(--white);border:1px solid var(--hairline);border-radius:18px;padding:20px}
-.card-sm{border-radius:12px;padding:16px}
-.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:400px){.card-grid{grid-template-columns:1fr}}
+.card{background:var(--white);border:1px solid var(--hairline);border-radius:16px;padding:18px}
+.card-sm{border-radius:12px;padding:14px}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:380px){.card-grid{grid-template-columns:1fr}}
 
 /* BUTTONS */
-.btn-primary{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:17px;font-weight:400;font-family:var(--sans);letter-spacing:-0.374px;padding:12px 22px;border-radius:9999px;border:none;cursor:pointer;transition:transform .1s;white-space:nowrap}
-.btn-primary:active{transform:scale(0.95)}
-.btn-ghost{display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--blue);font-size:17px;font-weight:400;font-family:var(--sans);letter-spacing:-0.374px;padding:11px 20px;border-radius:9999px;border:1.5px solid var(--blue);cursor:pointer;transition:transform .1s;white-space:nowrap}
-.btn-ghost:active{transform:scale(0.95)}
-.btn-danger{display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--red);font-size:14px;font-weight:400;font-family:var(--sans);letter-spacing:-0.224px;padding:6px 12px;border-radius:9999px;border:1px solid var(--red);cursor:pointer;transition:transform .1s}
-.btn-danger:active{transform:scale(0.95)}
-.btn-sm{font-size:14px;padding:8px 16px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--sans);font-size:15px;font-weight:400;
+  letter-spacing:-0.2px;padding:10px 20px;
+  border-radius:9999px;border:none;cursor:pointer;
+  transition:transform .1s;white-space:nowrap;
+}
+.btn:active{transform:scale(0.96)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-ghost{background:transparent;color:var(--blue);border:1.5px solid var(--blue)}
+.btn-sm{font-size:13px;padding:7px 14px}
 .btn-full{width:100%;border-radius:12px}
-.del-btn{background:none;border:none;color:var(--ink48);font-size:20px;cursor:pointer;padding:4px 6px;flex-shrink:0;line-height:1}
-.del-btn:active{opacity:0.5}
+.del-btn{background:none;border:none;color:var(--ink48);font-size:20px;cursor:pointer;padding:3px 6px;line-height:1;flex-shrink:0}
 
 /* INPUTS */
-input,textarea,select{font-family:var(--sans);font-size:17px;letter-spacing:-0.374px;color:var(--ink);-webkit-appearance:none;appearance:none}
-.field{width:100%;border:none;border-bottom:1.5px solid var(--hairline);background:transparent;padding:10px 4px;outline:none;font-size:17px;letter-spacing:-0.374px;color:var(--ink);line-height:1.47;transition:border-color .15s}
+input,textarea,select{
+  font-family:var(--sans);font-size:16px;
+  letter-spacing:-0.2px;color:var(--ink);
+  -webkit-appearance:none;appearance:none;
+}
+.field{
+  width:100%;border:none;
+  border-bottom:1.5px solid var(--hairline);
+  background:transparent;
+  padding:9px 4px;outline:none;
+  font-size:16px;color:var(--ink);line-height:1.5;
+  transition:border-color .15s;
+}
 .field:focus{border-color:var(--blue)}
 .field::placeholder{color:var(--ink48)}
-textarea.field{resize:vertical;border:1.5px solid var(--hairline);border-radius:12px;padding:14px;min-height:100px}
+textarea.field{
+  resize:vertical;
+  border:1.5px solid var(--hairline);
+  border-radius:12px;padding:12px;min-height:100px;
+}
 textarea.field:focus{border-color:var(--blue);outline:none}
-.select-field{width:100%;border:1px solid var(--hairline);background:var(--white);border-radius:12px;padding:12px 14px;font-size:17px;color:var(--ink);outline:none;cursor:pointer;letter-spacing:-0.374px}
-.label{font-size:14px;font-weight:600;letter-spacing:-0.224px;color:var(--ink48);margin-bottom:6px;display:block}
-.form-group{margin-bottom:16px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:380px){.form-row{grid-template-columns:1fr}}
+.select-field{
+  width:100%;border:1px solid var(--hairline);
+  background:var(--white);border-radius:10px;
+  padding:10px 12px;font-size:16px;color:var(--ink);
+  outline:none;cursor:pointer;
+}
+.label{font-size:13px;font-weight:600;letter-spacing:-0.1px;color:var(--ink48);margin-bottom:5px;display:block}
+.form-group{margin-bottom:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:360px){.form-row{grid-template-columns:1fr}}
 
 /* CHECKLIST */
-.check-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:0.5px solid var(--hairline)}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--hairline)}
 .check-item:last-child{border-bottom:none}
-.check-box{width:22px;height:22px;border-radius:50%;border:2px solid var(--hairline);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;-webkit-appearance:none;appearance:none;background:transparent}
+.check-box{width:20px;height:20px;border-radius:50%;border:2px solid var(--hairline);flex-shrink:0;cursor:pointer;-webkit-appearance:none;appearance:none;background:transparent;margin-top:2px;transition:all .15s}
 .check-box:checked{background:var(--blue);border-color:var(--blue)}
-.check-text{font-size:17px;letter-spacing:-0.374px;line-height:1.47;flex:1;word-break:keep-all}
+.check-text{font-size:16px;letter-spacing:-0.2px;line-height:1.47;flex:1;word-break:keep-all}
 .check-text.done{text-decoration:line-through;color:var(--ink48)}
 
 /* PILLS */
-.pill{display:inline-flex;align-items:center;font-size:13px;font-weight:600;letter-spacing:-0.1px;padding:4px 12px;border-radius:9999px}
+.pill{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:3px 10px;border-radius:9999px}
 .pill-blue{background:rgba(0,102,204,0.1);color:var(--blue)}
 .pill-green{background:rgba(26,107,26,0.1);color:var(--green)}
 .pill-orange{background:rgba(180,80,0,0.1);color:var(--orange)}
-.pill-red{background:rgba(204,34,0,0.1);color:var(--red)}
 .pill-gray{background:rgba(0,0,0,0.07);color:var(--ink48)}
 .pill-gold{background:rgba(138,109,0,0.1);color:var(--gold)}
 
-/* FINANCE SPECIFIC */
-.asset-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
-.asset-card{background:var(--white);border:1px solid var(--hairline);border-radius:16px;padding:18px}
-.asset-label{font-size:13px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:var(--ink48);margin-bottom:8px}
-.asset-num{font-size:26px;font-weight:600;letter-spacing:-0.374px}
+/* FINANCE */
+.asset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.asset-card{background:var(--white);border:1px solid var(--hairline);border-radius:14px;padding:14px}
+.asset-label{font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink48);margin-bottom:6px}
+.asset-num{font-size:22px;font-weight:600;letter-spacing:-0.374px}
 .asset-num.total{color:var(--blue)}
 .asset-num.saving{color:var(--green)}
-.asset-num.expense{color:var(--red)}
 .asset-num.fixed{color:var(--orange)}
 
-.fin-tabs{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.fin-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .fin-tabs::-webkit-scrollbar{display:none}
-.fin-tab{font-size:15px;font-weight:600;letter-spacing:-0.224px;color:var(--ink48);border:none;background:transparent;padding:7px 16px;border-radius:9999px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.fin-tab{font-size:14px;font-weight:600;color:var(--ink48);border:none;background:transparent;padding:6px 14px;border-radius:9999px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
 .fin-tab.active{background:var(--ink);color:#fff}
-.fin-tab:not(.active):hover{background:rgba(0,0,0,0.06)}
-
 .fin-section{display:none}
 .fin-section.active{display:block}
 
-.txn-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--white);border:1px solid var(--hairline);border-radius:12px;margin-bottom:8px}
-.txn-cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.sum-card{background:var(--white);border:1px solid var(--hairline);border-radius:12px;padding:12px;text-align:center}
+.sum-label{font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink48);margin-bottom:4px}
+.sum-num{font-size:18px;font-weight:600;letter-spacing:-0.3px}
+.sum-num.inc{color:var(--green)}.sum-num.exp{color:var(--red)}.sum-num.bal{color:var(--blue)}
+
+.txn-row{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--white);border:1px solid var(--hairline);border-radius:12px;margin-bottom:8px}
+.txn-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .txn-info{flex:1;min-width:0}
-.txn-desc{font-size:17px;letter-spacing:-0.374px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.txn-cat{font-size:13px;color:var(--ink48);letter-spacing:-0.1px;margin-top:2px}
-.txn-amount{font-size:17px;font-weight:600;letter-spacing:-0.374px;flex-shrink:0}
-.txn-amount.inc{color:var(--green)}
-.txn-amount.exp{color:var(--red)}
+.txn-desc{font-size:16px;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-cat{font-size:12px;color:var(--ink48);margin-top:1px}
+.txn-amt{font-size:16px;font-weight:600;letter-spacing:-0.2px;flex-shrink:0}
+.txn-amt.inc{color:var(--green)}.txn-amt.exp{color:var(--red)}
 
-.saving-card{background:var(--white);border:1px solid var(--hairline);border-radius:16px;padding:18px;margin-bottom:12px}
-.saving-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:8px}
-.saving-name{font-size:17px;font-weight:600;letter-spacing:-0.374px}
-.saving-bank{font-size:14px;color:var(--ink48);margin-top:2px}
-.progress-bar{height:6px;background:var(--hairline);border-radius:999px;overflow:hidden;margin:10px 0}
-.progress-fill{height:100%;background:var(--blue);border-radius:999px;transition:width .3s}
-.saving-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink48)}
+.saving-card{background:var(--white);border:1px solid var(--hairline);border-radius:14px;padding:16px;margin-bottom:10px}
+.prog-bar{height:5px;background:var(--hairline);border-radius:999px;overflow:hidden;margin:8px 0}
+.prog-fill{height:100%;background:var(--blue);border-radius:999px}
 
-.cat-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--hairline)}
+.cat-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--hairline)}
 .cat-item:last-child{border-bottom:none}
-.cat-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.cat-name{flex:1;font-size:17px;letter-spacing:-0.374px}
-.cat-amount{font-size:17px;font-weight:600;letter-spacing:-0.374px;color:var(--red)}
+.cat-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
 
-.fixed-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--hairline)}
-.fixed-row:last-child{border-bottom:none}
-.fixed-name{flex:1;font-size:17px;letter-spacing:-0.374px}
-.fixed-cat{font-size:13px;color:var(--ink48);margin-top:2px}
-.fixed-amount{font-size:17px;font-weight:600;letter-spacing:-0.374px;color:var(--orange)}
-
-.month-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-.ms-card{background:var(--white);border:1px solid var(--hairline);border-radius:14px;padding:14px;text-align:center}
-.ms-label{font-size:12px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:var(--ink48);margin-bottom:6px}
-.ms-num{font-size:20px;font-weight:600;letter-spacing:-0.374px}
-.ms-num.inc{color:var(--green)}.ms-num.exp{color:var(--red)}.ms-num.bal{color:var(--blue)}
+/* CALENDAR */
+.cal-wrap{background:var(--white);border:1px solid var(--hairline);border-radius:16px;padding:16px;margin-bottom:16px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-month{font-size:18px;font-weight:600;letter-spacing:-0.374px}
+.cal-nav{background:none;border:none;font-size:20px;color:var(--ink48);cursor:pointer;padding:3px 8px;border-radius:6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dh{text-align:center;font-size:11px;font-weight:600;color:var(--ink48);padding:3px 0}
+.cal-d{text-align:center;font-size:14px;padding:6px 2px;border-radius:6px;cursor:pointer;color:var(--ink)}
+.cal-d:hover{background:rgba(0,0,0,0.05)}
+.cal-d.today{background:var(--blue);color:#fff;border-radius:50%;font-weight:600}
+.cal-d.has-ev{font-weight:700;color:var(--blue)}
+.gcal-ev{display:flex;gap:8px;padding:10px 0;border-bottom:0.5px solid var(--hairline)}
+.gcal-ev:last-child{border-bottom:none}
+.gcal-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px}
+.gcal-time{font-size:12px;color:var(--ink48);flex-shrink:0;min-width:52px}
+.gcal-title{font-size:16px;letter-spacing:-0.2px;line-height:1.35;word-break:keep-all}
 
 /* MANDALA */
-.mandala-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px}
-.mandala-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;min-width:540px;max-width:720px;margin:0 auto}
-.m-cell{aspect-ratio:1;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-family:var(--nanum);line-height:1.3;padding:4px;cursor:text;background:var(--parchment);word-break:keep-all}
+.mandala-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 10px}
+.mandala-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:2px;min-width:500px;max-width:680px;margin:0 auto}
+.m-cell{
+  aspect-ratio:1;border:1px solid var(--hairline);
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:10px;font-family:var(--nanum);
+  line-height:1.3;padding:3px;cursor:text;
+  background:var(--white);word-break:keep-all;
+}
 .m-cell[contenteditable]:focus{background:#e8f0fb;outline:none;border-color:var(--blue)}
-.m-cell.center-main{background:var(--ink);color:#fff;font-weight:700;font-size:12px;font-family:var(--sans)}
-.m-cell.sub-center{background:var(--blue);color:#fff;font-weight:600;font-size:11px}
+.m-cell.center-main{background:var(--ink);color:#fff;font-weight:700;font-size:11px;font-family:var(--sans)}
+.m-cell.sub-center{background:var(--blue);color:#fff;font-weight:600}
 
-/* SCHEDULE */
-.cal-wrap{background:var(--white);border:1px solid var(--hairline);border-radius:18px;padding:18px;margin-bottom:18px}
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.cal-month{font-size:20px;font-weight:600;letter-spacing:-0.374px}
-.cal-nav-btn{background:none;border:none;font-size:22px;color:var(--ink48);cursor:pointer;padding:4px 10px;border-radius:8px}
-.cal-nav-btn:active{background:rgba(0,0,0,0.06)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal-day-h{text-align:center;font-size:12px;font-weight:600;color:var(--ink48);padding:4px 0}
-.cal-day{text-align:center;font-size:15px;padding:7px 2px;border-radius:8px;cursor:pointer;line-height:1;color:var(--ink)}
-.cal-day:hover{background:rgba(0,0,0,0.06)}
-.cal-day.today{background:var(--blue);color:#fff;border-radius:50%;font-weight:600}
-.cal-day.has-event{font-weight:700;color:var(--blue)}
-.gcal-event{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:0.5px solid var(--hairline)}
-.gcal-event:last-child{border-bottom:none}
-.gcal-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px}
-.gcal-time{font-size:13px;color:var(--ink48);flex-shrink:0;min-width:56px}
-.gcal-title{font-size:17px;letter-spacing:-0.374px;line-height:1.35;word-break:keep-all}
-
-/* NOTES / DIARY / JOB */
-.note-card{background:var(--white);border:1px solid var(--hairline);border-radius:14px;padding:16px;margin-bottom:12px}
+/* NOTES */
+.note-card{background:var(--white);border:1px solid var(--hairline);border-radius:14px;padding:14px;margin-bottom:10px}
 .note-card.resolved{opacity:0.5;border-style:dashed}
-.diary-q-card{background:var(--tile1);border-radius:18px;padding:24px;margin-bottom:18px}
-.diary-q-label{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.diary-q-text{font-size:22px;font-weight:600;letter-spacing:-0.374px;line-height:1.35;color:#fff}
-.job-card{background:var(--white);border:1px solid var(--hairline);border-radius:18px;padding:18px;margin-bottom:14px}
 
-.divider{height:0.5px;background:var(--hairline);margin:18px 0}
-.empty-state{text-align:center;padding:36px 20px;color:var(--ink48);font-size:17px;letter-spacing:-0.374px}
-.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.space{height:20px}
+/* DIARY */
+.diary-q-card{background:var(--tile1);border-radius:16px;padding:22px;margin-bottom:16px}
+.diary-q-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.diary-q-text{font-size:20px;font-weight:600;letter-spacing:-0.374px;line-height:1.35;color:#fff}
 
-/* COLOR DOTS for categories */
+/* JOB */
+.job-card{background:var(--white);border:1px solid var(--hairline);border-radius:16px;padding:16px;margin-bottom:12px}
+
+.divider{height:0.5px;background:var(--hairline);margin:16px 0}
+.empty{text-align:center;padding:32px 16px;color:var(--ink48);font-size:16px;letter-spacing:-0.2px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mb12{margin-bottom:12px}
+.mb16{margin-bottom:16px}
+
+/* COLOR DOTS */
 .dot-red{background:#e53935}.dot-orange{background:#fb8c00}.dot-amber{background:#ffb300}
 .dot-green{background:#43a047}.dot-teal{background:#00897b}.dot-blue{background:#1e88e5}
 .dot-purple{background:#8e24aa}.dot-pink{background:#e91e63}.dot-gray{background:#757575}
@@ -204,7 +253,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 </head>
 <body>
 
-<div class="global-nav">
+<nav class="global-nav">
   <span class="nav-logo">Life Gazette</span>
   <div class="nav-right">
     <span class="sync-status" id="sync-status">Not signed in</span>
@@ -212,7 +261,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
     <div id="g-signin-wrap"><div id="g-signin-btn"></div></div>
     <button class="nav-btn-sm ghost" id="btn-signout" onclick="signOut()" style="display:none">Out</button>
   </div>
-</div>
+</nav>
 
 <div class="sub-nav">
   <button class="sub-tab active" onclick="showTab('mandala')">Mandala</button>
@@ -223,152 +272,140 @@ textarea.field:focus{border-color:var(--blue);outline:none}
   <button class="sub-tab" onclick="showTab('job')">Job Hunt</button>
 </div>
 
-<div class="main-wrap">
-
 <!-- MANDALA -->
-<div class="tab active tile tile-parchment" id="tab-mandala">
-  <div style="background:#000;border-radius:18px;display:flex;align-items:center;justify-content:center;padding:32px 0;margin-bottom:20px">
-    <canvas id="logo-canvas" width="280" height="160" style="width:100%;max-width:280px;height:auto"></canvas>
+<div class="tab active" id="tab-mandala">
+  <div class="logo-box">
+    <canvas id="logo-canvas" width="280" height="150"></canvas>
   </div>
-  <div class="sec-header"><div><div class="display-md">Mandala Chart</div><div class="caption">Tap any cell to edit</div></div></div>
+  <div class="sec-hdr">
+    <div><div class="display-md">Mandala Chart</div><div class="caption">Tap any cell to edit</div></div>
+  </div>
   <div class="mandala-outer"><div class="mandala-grid" id="mandala-grid"></div></div>
-  <div class="space"></div>
 </div>
 
 <!-- SCHEDULE -->
-<div class="tab tile tile-parchment" id="tab-schedule">
+<div class="tab" id="tab-schedule">
   <div class="cal-wrap">
     <div class="cal-header">
-      <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
       <span class="cal-month" id="month-label"></span>
-      <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+      <button class="cal-nav" onclick="changeMonth(1)">›</button>
     </div>
     <div class="cal-grid" id="cal-mini"></div>
-    <div id="gcal-day-events" style="margin-top:14px;display:none">
-      <div class="caption" style="margin-bottom:8px;font-weight:600">Events</div>
-      <div id="gcal-events-list"></div>
+    <div id="gcal-day-wrap" style="margin-top:12px;display:none">
+      <div class="caption mb12" style="font-weight:600">Calendar events</div>
+      <div id="gcal-day-list"></div>
     </div>
   </div>
-  <div class="card-grid">
+  <div class="card-grid mb16">
     <div class="card card-sm">
-      <div class="sec-title-sm" style="margin-bottom:12px">Weekly</div>
+      <div class="sec-title-sm mb12">Weekly</div>
       <input class="field" id="weekly-in" placeholder="Add task..." onkeydown="if(event.key==='Enter')addItem('weekly')">
-      <button class="btn-primary btn-sm btn-full" style="margin-top:10px" onclick="addItem('weekly')">Add</button>
-      <div id="weekly-list" style="margin-top:10px"></div>
+      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('weekly')">Add</button>
+      <div id="weekly-list" style="margin-top:8px"></div>
     </div>
     <div class="card card-sm">
-      <div class="sec-title-sm" style="margin-bottom:12px">Monthly</div>
+      <div class="sec-title-sm mb12">Monthly</div>
       <input class="field" id="monthly-in" placeholder="Add goal..." onkeydown="if(event.key==='Enter')addItem('monthly')">
-      <button class="btn-primary btn-sm btn-full" style="margin-top:10px" onclick="addItem('monthly')">Add</button>
-      <div id="monthly-list" style="margin-top:10px"></div>
+      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('monthly')">Add</button>
+      <div id="monthly-list" style="margin-top:8px"></div>
     </div>
     <div class="card card-sm">
-      <div class="sec-title-sm" style="margin-bottom:12px">Today</div>
+      <div class="sec-title-sm mb12">Today</div>
       <input class="field" id="today-in" placeholder="Add task..." onkeydown="if(event.key==='Enter')addItem('today_tasks','today')">
-      <button class="btn-primary btn-sm btn-full" style="margin-top:10px" onclick="addItem('today_tasks','today')">Add</button>
-      <div id="today_tasks-list" style="margin-top:10px"></div>
+      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('today_tasks','today')">Add</button>
+      <div id="today_tasks-list" style="margin-top:8px"></div>
     </div>
     <div class="card card-sm">
-      <div class="sec-title-sm" style="margin-bottom:12px">Memo</div>
+      <div class="sec-title-sm mb12">Memo</div>
       <textarea class="field" id="memo-area" placeholder="Quick notes..." style="min-height:90px" onblur="D.memo=this.value;autoSave()"></textarea>
     </div>
   </div>
-  <div class="space"></div>
 </div>
 
 <!-- FINANCE -->
-<div class="tab tile tile-parchment" id="tab-finance">
-  <!-- 순자산 요약 -->
-  <div class="asset-summary">
+<div class="tab" id="tab-finance">
+  <div class="asset-grid">
     <div class="asset-card" style="grid-column:span 2">
       <div class="asset-label">Net Worth</div>
       <div class="asset-num total" id="net-worth">₩0</div>
-      <div class="caption" style="margin-top:4px" id="net-worth-sub">자산 합계</div>
     </div>
     <div class="asset-card">
       <div class="asset-label">Savings</div>
       <div class="asset-num saving" id="total-savings">₩0</div>
     </div>
     <div class="asset-card">
-      <div class="asset-label">Fixed / mo</div>
+      <div class="asset-label">Fixed/mo</div>
       <div class="asset-num fixed" id="total-fixed">₩0</div>
     </div>
   </div>
-
-  <!-- 서브탭 -->
   <div class="fin-tabs">
     <button class="fin-tab active" onclick="showFinTab('txn')">거래 내역</button>
-    <button class="fin-tab" onclick="showFinTab('savings')">적금 · 예금</button>
+    <button class="fin-tab" onclick="showFinTab('savings')">적금·예금</button>
     <button class="fin-tab" onclick="showFinTab('fixed')">고정 지출</button>
     <button class="fin-tab" onclick="showFinTab('cats')">카테고리</button>
   </div>
 
-  <!-- 거래 내역 -->
   <div class="fin-section active" id="fin-txn">
-    <div class="month-summary-grid">
-      <div class="ms-card"><div class="ms-label">Income</div><div class="ms-num inc" id="fin-income">₩0</div></div>
-      <div class="ms-card"><div class="ms-label">Expense</div><div class="ms-num exp" id="fin-expense">₩0</div></div>
-      <div class="ms-card"><div class="ms-label">Balance</div><div class="ms-num bal" id="fin-balance">₩0</div></div>
+    <div class="sum-grid">
+      <div class="sum-card"><div class="sum-label">Income</div><div class="sum-num inc" id="fin-income">₩0</div></div>
+      <div class="sum-card"><div class="sum-label">Expense</div><div class="sum-num exp" id="fin-expense">₩0</div></div>
+      <div class="sum-card"><div class="sum-label">Balance</div><div class="sum-num bal" id="fin-balance">₩0</div></div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-      <select class="select-field" id="fin-month-sel" onchange="renderFinance()" style="flex:1;min-width:160px"></select>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="sec-title-sm" style="margin-bottom:14px">Add Transaction</div>
-      <div class="form-group"><label class="label">Description</label><input class="field" id="fin-desc" placeholder="e.g. 월급, 카페, 교통비"></div>
-      <div class="form-row" style="margin-bottom:14px">
+    <div style="margin-bottom:12px"><select class="select-field" id="fin-month-sel" onchange="renderFinance()"></select></div>
+    <div class="card mb16">
+      <div class="sec-title-sm mb12">Add Transaction</div>
+      <div class="form-group"><label class="label">Description</label><input class="field" id="fin-desc" placeholder="예: 월급, 카페"></div>
+      <div class="form-row mb12">
         <div><label class="label">Amount (₩)</label><input class="field" id="fin-amount" type="number" inputmode="numeric" placeholder="0"></div>
         <div><label class="label">Type</label><select class="select-field" id="fin-type"><option value="income">수입</option><option value="expense">지출</option></select></div>
       </div>
       <div class="form-group"><label class="label">Category</label><select class="select-field" id="fin-cat"></select></div>
-      <button class="btn-primary btn-full" onclick="addFinance()">Add</button>
+      <button class="btn btn-primary btn-full" onclick="addFinance()">Add</button>
     </div>
     <div id="fin-list"></div>
   </div>
 
-  <!-- 적금·예금 -->
   <div class="fin-section" id="fin-savings">
-    <div class="card" style="margin-bottom:16px">
-      <div class="sec-title-sm" style="margin-bottom:14px">새 적금 · 예금 추가</div>
-      <div class="form-group"><label class="label">이름</label><input class="field" id="sav-name" placeholder="예: 청년희망적금, KB 정기예금"></div>
-      <div class="form-row" style="margin-bottom:14px">
+    <div class="card mb16">
+      <div class="sec-title-sm mb12">새 적금·예금 추가</div>
+      <div class="form-group"><label class="label">이름</label><input class="field" id="sav-name" placeholder="예: 청년희망적금"></div>
+      <div class="form-row mb12">
         <div><label class="label">은행</label><input class="field" id="sav-bank" placeholder="예: 카카오뱅크"></div>
         <div><label class="label">종류</label><select class="select-field" id="sav-type"><option value="saving">적금</option><option value="deposit">예금</option><option value="investment">투자</option><option value="cash">현금</option></select></div>
       </div>
-      <div class="form-row" style="margin-bottom:14px">
+      <div class="form-row mb12">
         <div><label class="label">현재 금액 (₩)</label><input class="field" id="sav-current" type="number" inputmode="numeric" placeholder="0"></div>
         <div><label class="label">목표 금액 (₩)</label><input class="field" id="sav-target" type="number" inputmode="numeric" placeholder="0"></div>
       </div>
-      <div class="form-row" style="margin-bottom:14px">
+      <div class="form-row mb12">
         <div><label class="label">월 납입액 (₩)</label><input class="field" id="sav-monthly" type="number" inputmode="numeric" placeholder="0"></div>
         <div><label class="label">만기일</label><input class="field" id="sav-maturity" type="date"></div>
       </div>
-      <button class="btn-primary btn-full" onclick="addSaving()">추가</button>
+      <button class="btn btn-primary btn-full" onclick="addSaving()">추가</button>
     </div>
     <div id="savings-list"></div>
   </div>
 
-  <!-- 고정 지출 -->
   <div class="fin-section" id="fin-fixed">
-    <div class="card" style="margin-bottom:16px">
-      <div class="sec-title-sm" style="margin-bottom:14px">고정 지출 추가</div>
-      <div class="form-group"><label class="label">항목명</label><input class="field" id="fx-name" placeholder="예: 월세, 넷플릭스, 보험"></div>
-      <div class="form-row" style="margin-bottom:14px">
+    <div class="card mb16">
+      <div class="sec-title-sm mb12">고정 지출 추가</div>
+      <div class="form-group"><label class="label">항목명</label><input class="field" id="fx-name" placeholder="예: 월세, 넷플릭스"></div>
+      <div class="form-row mb12">
         <div><label class="label">금액 (₩)</label><input class="field" id="fx-amount" type="number" inputmode="numeric" placeholder="0"></div>
         <div><label class="label">카테고리</label><select class="select-field" id="fx-cat"></select></div>
       </div>
-      <div class="form-group"><label class="label">결제일</label><input class="field" id="fx-day" type="number" inputmode="numeric" placeholder="매월 N일 (예: 25)"></div>
-      <button class="btn-primary btn-full" onclick="addFixed()">추가</button>
+      <div class="form-group"><label class="label">결제일 (매월 N일)</label><input class="field" id="fx-day" type="number" inputmode="numeric" placeholder="25"></div>
+      <button class="btn btn-primary btn-full" onclick="addFixed()">추가</button>
     </div>
     <div id="fixed-list"></div>
   </div>
 
-  <!-- 카테고리 관리 -->
   <div class="fin-section" id="fin-cats">
-    <div class="card" style="margin-bottom:16px">
-      <div class="sec-title-sm" style="margin-bottom:14px">카테고리 추가</div>
-      <div class="form-row" style="margin-bottom:14px">
-        <div><label class="label">이름</label><input class="field" id="cat-name" placeholder="예: 외식, 교통, 구독"></div>
+    <div class="card mb16">
+      <div class="sec-title-sm mb12">카테고리 추가</div>
+      <div class="form-row mb12">
+        <div><label class="label">이름</label><input class="field" id="cat-name" placeholder="예: 외식, 교통"></div>
         <div><label class="label">색상</label>
           <select class="select-field" id="cat-color">
             <option value="dot-red">빨강</option><option value="dot-orange">주황</option>
@@ -379,82 +416,71 @@ textarea.field:focus{border-color:var(--blue);outline:none}
           </select>
         </div>
       </div>
-      <button class="btn-primary btn-full" onclick="addCategory()">추가</button>
+      <button class="btn btn-primary btn-full" onclick="addCategory()">추가</button>
     </div>
-    <div class="card">
-      <div class="sec-title-sm" style="margin-bottom:14px">내 카테고리</div>
+    <div class="card mb16">
+      <div class="sec-title-sm mb12">내 카테고리</div>
       <div id="cats-list"></div>
     </div>
-    <div class="space"></div>
-    <div class="card" style="margin-top:16px">
-      <div class="sec-title-sm" style="margin-bottom:6px">카테고리별 이번 달 지출</div>
-      <div class="caption" style="margin-bottom:14px" id="cat-month-label"></div>
+    <div class="card">
+      <div class="sec-title-sm mb12">이번 달 카테고리별 지출</div>
       <div id="cats-breakdown"></div>
     </div>
   </div>
-
-  <div class="space"></div>
 </div>
 
 <!-- NOTES -->
-<div class="tab tile tile-parchment" id="tab-notes">
-  <div class="display-md" style="margin-bottom:6px">Thoughts</div>
-  <div class="caption" style="margin-bottom:20px">Capture fleeting thoughts. Check off when resolved.</div>
-  <div class="card" style="margin-bottom:18px">
-    <textarea class="field" id="note-input" placeholder="What's on your mind right now..."></textarea>
-    <button class="btn-primary btn-full" onclick="addNote()" style="margin-top:12px">Record thought</button>
+<div class="tab" id="tab-notes">
+  <div class="display-md mb12">Thoughts</div>
+  <div class="caption" style="margin-bottom:18px">생각이 떠오를 때 기록하고, 해결되면 체크하세요.</div>
+  <div class="card mb16">
+    <textarea class="field" id="note-input" placeholder="지금 이 순간의 생각을 적으세요..."></textarea>
+    <button class="btn btn-primary btn-full" onclick="addNote()" style="margin-top:10px">기록하기</button>
   </div>
   <div id="notes-list"></div>
-  <div class="space"></div>
 </div>
 
 <!-- DIARY -->
-<div class="tab tile tile-parchment" id="tab-diary">
+<div class="tab" id="tab-diary">
   <div class="diary-q-card">
     <div class="diary-q-label">Today's question</div>
     <div class="diary-q-text" id="diary-question"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
     <span class="caption" id="diary-date-label"></span>
-    <button class="btn-ghost btn-sm" onclick="newQuestion()">New question</button>
+    <button class="btn btn-ghost btn-sm" onclick="newQuestion()">New question</button>
   </div>
-  <textarea class="field" id="diary-area" placeholder="Write freely..." style="min-height:200px;margin-bottom:14px"></textarea>
-  <button class="btn-primary btn-full" onclick="saveDiary()">Save entry</button>
+  <textarea class="field" id="diary-area" placeholder="자유롭게 써보세요..." style="min-height:200px;margin-bottom:14px"></textarea>
+  <button class="btn btn-primary btn-full" onclick="saveDiary()">Save entry</button>
   <div class="divider"></div>
   <div id="diary-entries"></div>
-  <div class="space"></div>
 </div>
 
 <!-- JOB -->
-<div class="tab tile tile-parchment" id="tab-job">
-  <div class="display-md" style="margin-bottom:6px">Job Hunt</div>
-  <div class="caption" style="margin-bottom:20px">Track applications & checklists.</div>
-  <div class="card" style="margin-bottom:18px">
-    <div class="sec-title-sm" style="margin-bottom:14px">New Application</div>
-    <div class="form-group"><label class="label">Company</label><input class="field" id="j-company" placeholder="Company name"></div>
-    <div class="form-group"><label class="label">Role</label><input class="field" id="j-title" placeholder="Position / department"></div>
-    <div class="form-row" style="margin-bottom:14px">
+<div class="tab" id="tab-job">
+  <div class="display-md mb12">Job Hunt</div>
+  <div class="caption" style="margin-bottom:18px">지원 현황과 체크리스트를 관리하세요.</div>
+  <div class="card mb16">
+    <div class="sec-title-sm mb12">New Application</div>
+    <div class="form-group"><label class="label">Company</label><input class="field" id="j-company" placeholder="회사명"></div>
+    <div class="form-group"><label class="label">Role</label><input class="field" id="j-title" placeholder="직무/포지션"></div>
+    <div class="form-row mb12">
       <div><label class="label">Deadline</label><input class="field" id="j-deadline" type="date"></div>
       <div><label class="label">Status</label><select class="select-field" id="j-status"><option value="apply">Planning</option><option value="doc">Applied</option><option value="interview">Interview</option><option value="result">Awaiting</option></select></div>
     </div>
-    <div class="form-group"><label class="label">Cover letter topics</label><input class="field" id="j-essay" placeholder="e.g. Motivation, Strengths..."></div>
-    <button class="btn-primary btn-full" onclick="addJob()">Register</button>
+    <div class="form-group"><label class="label">자소서 항목</label><input class="field" id="j-essay" placeholder="예: 지원동기, 장단점..."></div>
+    <button class="btn btn-primary btn-full" onclick="addJob()">Register</button>
   </div>
   <div id="job-list"></div>
-  <div class="space"></div>
 </div>
-
-</div><!-- main-wrap -->
 
 <script>
 const CLIENT_ID='793879614355-tmtc0lfjfe9t7m9v5c71a81nv75dpg05.apps.googleusercontent.com';
-const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
-const GCAL_SCOPE='https://www.googleapis.com/auth/calendar.readonly';
+const SCOPE='https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar.readonly';
 const FILE_NAME='my_life_gazette_data.json';
 let accessToken=null,driveFileId=null,autoSaveTimer=null,gcalEvents=[];
 const now=new Date();
 
-/* DEFAULT CATEGORIES - 기존 데이터에 없으면 기본값 사용 */
 const DEFAULT_CATS=[
   {id:'cat_food',name:'식비',color:'dot-orange'},
   {id:'cat_transport',name:'교통',color:'dot-blue'},
@@ -470,109 +496,124 @@ const DEFAULT_CATS=[
 let D={
   mandala:Array(81).fill(''),
   weekly:[],monthly:[],today_tasks:[],memo:'',
-  finance:[],       // {id,desc,amount,type,month,catId}
-  savings:[],       // {id,name,bank,type,current,target,monthly,maturity}
-  fixedCosts:[],    // {id,name,amount,catId,day}
-  categories:[],    // {id,name,color}  — user-managed
+  finance:[],savings:[],fixedCosts:[],categories:[],
   notes:[],diary:[],jobs:[],
   curMonth:now.toISOString().slice(0,7),
   viewMonth:{year:now.getFullYear(),month:now.getMonth()}
 };
 
-document.getElementById('diary-date-label').textContent=now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('diary-date-label').textContent=now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
 
-/* STORAGE */
-function setStatus(msg,type){const el=document.getElementById('sync-status');el.textContent=msg;el.className='sync-status'+(type==='ok'?' ok':type==='err'?' err':'')}
+function ss(msg,type){const el=document.getElementById('sync-status');el.textContent=msg;el.className='sync-status'+(type==='ok'?' ok':type==='err'?' err':'')}
 
 window.addEventListener('load',()=>{
   google.accounts.id.initialize({client_id:CLIENT_ID,callback:handleCredential,auto_select:false});
-  google.accounts.id.renderButton(document.getElementById('g-signin-btn'),{type:'standard',theme:'filled_black',size:'small',text:'signin_with',shape:'rectangular',locale:'en'});
+  google.accounts.id.renderButton(document.getElementById('g-signin-btn'),{type:'standard',theme:'filled_black',size:'small',text:'signin_with',shape:'rectangular',locale:'ko'});
   const tok=sessionStorage.getItem('mlg_token');
-  if(tok){accessToken=tok;driveFileId=sessionStorage.getItem('mlg_fileid')||null;const em=sessionStorage.getItem('mlg_email');setStatus(em?em.split('@')[0]:'Synced','ok');onSignedIn();loadFromGDrive();loadGCalEvents();}
+  if(tok){
+    accessToken=tok;driveFileId=sessionStorage.getItem('mlg_fileid')||null;
+    const em=sessionStorage.getItem('mlg_email');
+    ss(em?em.split('@')[0]:'Synced','ok');
+    onSignedIn();loadFromGDrive();loadGCal();
+  }
+  startLogo();
 });
 
 function handleCredential(resp){
   const payload=JSON.parse(atob(resp.credential.split('.')[1]));
   sessionStorage.setItem('mlg_email',payload.email);
-  const tc=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:DRIVE_SCOPE+' '+GCAL_SCOPE,callback:(tr)=>{
-    if(tr.error){setStatus('Auth failed','err');return}
+  const tc=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:(tr)=>{
+    if(tr.error){ss('Auth failed','err');return}
     accessToken=tr.access_token;sessionStorage.setItem('mlg_token',accessToken);
-    setStatus(payload.email.split('@')[0],'ok');onSignedIn();loadFromGDrive();loadGCalEvents();
+    ss(payload.email.split('@')[0],'ok');onSignedIn();loadFromGDrive();loadGCal();
   }});
   tc.requestAccessToken({prompt:''});
 }
-function onSignedIn(){document.getElementById('g-signin-wrap').style.display='none';document.getElementById('btn-signout').style.display='';document.getElementById('btn-save').style.display='';}
-function signOut(){accessToken=null;driveFileId=null;sessionStorage.clear();document.getElementById('g-signin-wrap').style.display='';document.getElementById('btn-signout').style.display='none';document.getElementById('btn-save').style.display='none';setStatus('Not signed in','');}
 
-async function findFile(){const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}'+and+trashed=false&fields=files(id)`,{headers:{Authorization:'Bearer '+accessToken}});const d=await r.json();if(d.files&&d.files.length>0){driveFileId=d.files[0].id;sessionStorage.setItem('mlg_fileid',driveFileId);return true}return false;}
+function onSignedIn(){
+  document.getElementById('g-signin-wrap').style.display='none';
+  document.getElementById('btn-signout').style.display='';
+  document.getElementById('btn-save').style.display='';
+}
+function signOut(){
+  accessToken=null;driveFileId=null;sessionStorage.clear();
+  document.getElementById('g-signin-wrap').style.display='';
+  document.getElementById('btn-signout').style.display='none';
+  document.getElementById('btn-save').style.display='none';
+  ss('Not signed in','');
+}
+
+async function findFile(){
+  const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}'+and+trashed=false&fields=files(id)`,{headers:{Authorization:'Bearer '+accessToken}});
+  const d=await r.json();
+  if(d.files&&d.files.length>0){driveFileId=d.files[0].id;sessionStorage.setItem('mlg_fileid',driveFileId);return true}
+  return false;
+}
 
 async function saveToGDrive(){
-  if(!accessToken)return;setStatus('Saving...','');
+  if(!accessToken)return;ss('Saving...','');
   try{
     const body=JSON.stringify(D);
     if(!driveFileId)await findFile();
-    if(driveFileId){await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body});}
-    else{const fd=new FormData();fd.append('metadata',new Blob([JSON.stringify({name:FILE_NAME,mimeType:'application/json'})],{type:'application/json'}));fd.append('file',new Blob([body],{type:'application/json'}));const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+accessToken},body:fd});const rd=await r.json();driveFileId=rd.id;sessionStorage.setItem('mlg_fileid',driveFileId);}
-    setStatus('Saved '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),'ok');
-  }catch(e){setStatus('Save failed','err')}
+    if(driveFileId){
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body});
+    }else{
+      const fd=new FormData();
+      fd.append('metadata',new Blob([JSON.stringify({name:FILE_NAME,mimeType:'application/json'})],{type:'application/json'}));
+      fd.append('file',new Blob([body],{type:'application/json'}));
+      const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+accessToken},body:fd});
+      const rd=await r.json();driveFileId=rd.id;sessionStorage.setItem('mlg_fileid',driveFileId);
+    }
+    ss('Saved '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),'ok');
+  }catch(e){ss('Save failed','err')}
 }
 
 async function loadFromGDrive(){
-  if(!accessToken)return;setStatus('Loading...','');
+  if(!accessToken)return;ss('Loading...','');
   try{
     const found=await findFile();
-    if(!found){setStatus('Ready','ok');initAll();return}
+    if(!found){ss('Ready','ok');initAll();return}
     const r=await fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,{headers:{Authorization:'Bearer '+accessToken}});
     const data=await r.json();
-    /* 안전한 병합: 기존 키 유지하면서 새 키는 기본값 유지 */
     Object.keys(data).forEach(k=>{D[k]=data[k]});
-    setStatus('Synced','ok');initAll();
-  }catch(e){setStatus('Load failed','err');initAll()}
+    ss('Synced','ok');initAll();
+  }catch(e){ss('Load failed','err');initAll()}
 }
 
-async function loadGCalEvents(){
+async function loadGCal(){
   if(!accessToken)return;
   try{
-    const start=new Date();start.setHours(0,0,0,0);const end=new Date(start);end.setDate(end.getDate()+30);
-    const r=await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${start.toISOString()}&timeMax=${end.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=50`,{headers:{Authorization:'Bearer '+accessToken}});
-    const d=await r.json();gcalEvents=(d.items||[]).filter(e=>e.status!=='cancelled');
-    if(document.getElementById('tab-schedule').classList.contains('active'))renderSchedule();
+    const s=new Date();s.setHours(0,0,0,0);const e=new Date(s);e.setDate(e.getDate()+30);
+    const r=await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${s.toISOString()}&timeMax=${e.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=50`,{headers:{Authorization:'Bearer '+accessToken}});
+    const d=await r.json();
+    gcalEvents=(d.items||[]).filter(e=>e.status!=='cancelled');
+    if(document.getElementById('tab-schedule').style.display!=='none')renderSchedule();
   }catch(e){}
 }
 
 function autoSave(){clearTimeout(autoSaveTimer);autoSaveTimer=setTimeout(()=>{if(accessToken)saveToGDrive()},3000)}
-function initAll(){ensureCategories();buildMandala();initFinSel();renderSchedule();populateCatSelects();}
 
-/* 카테고리가 없으면 기본값 주입 (기존 데이터 건드리지 않음) */
-function ensureCategories(){if(!D.categories||D.categories.length===0)D.categories=[...DEFAULT_CATS];}
-function getCat(id){return D.categories.find(c=>c.id===id)||{name:'기타',color:'dot-gray'}}
-function getCatColorClass(id){return getCat(id).color}
-
-function populateCatSelects(){
-  ['fin-cat','fx-cat'].forEach(selId=>{
-    const sel=document.getElementById(selId);if(!sel)return;
-    const cur=sel.value;sel.innerHTML='';
-    D.categories.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;sel.appendChild(o)});
-    if(cur)sel.value=cur;
-  });
+function initAll(){
+  if(!D.categories||!D.categories.length)D.categories=[...DEFAULT_CATS];
+  buildMandala();initFinSel();renderSchedule();populateCatSelects();
 }
 
-function showTab(t){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.sub-tab').forEach(x=>x.classList.remove('active'));
-  document.getElementById('tab-'+t).classList.add('active');
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   const tabs=['mandala','schedule','finance','notes','diary','job'];
-  document.querySelectorAll('.sub-tab')[tabs.indexOf(t)].classList.add('active');
-  if(t==='schedule')renderSchedule();
-  if(t==='finance'){renderFinance();renderSavings();renderFixed();renderCats();}
-  if(t==='notes')renderNotes();
-  if(t==='diary')renderDiary();
-  if(t==='job')renderJobs();
+  document.querySelectorAll('.sub-tab')[tabs.indexOf(name)].classList.add('active');
+  if(name==='schedule')renderSchedule();
+  if(name==='finance'){renderFinance();renderSavings();renderFixed();renderCats();}
+  if(name==='notes')renderNotes();
+  if(name==='diary')renderDiary();
+  if(name==='job')renderJobs();
 }
 
 function showFinTab(name){
-  document.querySelectorAll('.fin-section').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.fin-tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.fin-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.fin-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('fin-'+name).classList.add('active');
   const tabs=['txn','savings','fixed','cats'];
   document.querySelectorAll('.fin-tab')[tabs.indexOf(name)].classList.add('active');
@@ -582,17 +623,73 @@ function showFinTab(name){
   if(name==='cats'){renderCats();renderCatsBreakdown();}
 }
 
+/* LOGO ANIMATION */
+function startLogo(){
+  const cv=document.getElementById('logo-canvas');
+  if(!cv)return;
+  const W=280,H=150;
+  cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.save();ctx.translate(W/2,H/2);ctx.rotate(-0.13);
+    const RX=100,RY=50,TUBE_R=15;
+    const sq=Math.cos(t),abs=Math.abs(sq),flip=sq<0;
+    const steps=300;
+    if(abs>0.008){
+      for(let i=steps-1;i>=0;i--){
+        const a=(i/steps)*Math.PI*2,na=((i+1)/steps)*Math.PI*2;
+        const cx0=RX*abs*Math.cos(a),cy0=RY*Math.sin(a);
+        const cx1=RX*abs*Math.cos(na),cy1=RY*Math.sin(na);
+        const tx0=-Math.sin(a)*abs,ty0=Math.cos(a)*(RY/RX);
+        const tl=Math.sqrt(tx0*tx0+ty0*ty0);
+        const nx=-ty0/tl,ny=tx0/tl;
+        const depth=Math.cos(a+(flip?Math.PI:0));
+        const la=Math.cos(a-Math.PI*0.25);
+        const rl=Math.sin(a+Math.PI);
+        const ta=Math.asin(Math.max(-1,Math.min(1,depth)));
+        const hw=Math.max(0.3,TUBE_R*Math.cos(ta));
+        const px0=cx0-nx*hw,py0=cy0-ny*hw;
+        const px1=cx0+nx*hw,py1=cy0+ny*hw;
+        const px2=cx1+nx*hw,py2=cy1+ny*hw;
+        const px3=cx1-nx*hw,py3=cy1-ny*hw;
+        const bl=depth*0.5+0.5;
+        const hi=Math.max(0,la)*0.6;
+        const rim=Math.max(0,rl)*0.12;
+        const br=Math.min(1,bl*0.55+hi+rim);
+        const dk=1-br;
+        const rv=Math.round(br*245+dk*8);
+        const gv=Math.round(br*245+dk*8);
+        const bv=Math.round(br*248+dk*10);
+        const g=ctx.createLinearGradient(px0,py0,px1,py1);
+        const ed=`rgba(${Math.round(rv*0.12)},${Math.round(gv*0.12)},${Math.round(bv*0.12)},1)`;
+        const em=`rgba(${Math.round(rv*0.55)},${Math.round(gv*0.55)},${Math.round(bv*0.55)},1)`;
+        const ce=`rgba(${rv},${gv},${bv},1)`;
+        const sp=`rgba(255,255,255,${0.3+br*0.5})`;
+        g.addColorStop(0,ed);g.addColorStop(0.18,em);g.addColorStop(0.42,ce);
+        g.addColorStop(0.52,sp);g.addColorStop(0.62,ce);g.addColorStop(0.82,em);g.addColorStop(1,ed);
+        ctx.beginPath();ctx.moveTo(px0,py0);ctx.lineTo(px1,py1);ctx.lineTo(px2,py2);ctx.lineTo(px3,py3);
+        ctx.closePath();ctx.fillStyle=g;ctx.fill();
+      }
+    }
+    ctx.restore();
+    t+=0.018;requestAnimationFrame(draw);
+  }
+  draw();
+}
+
 /* MANDALA */
-const MANDALA_LAYOUT=[[0,1,2,9,10,11,18,19,20],[3,4,5,12,13,14,21,22,23],[6,7,8,15,16,17,24,25,26],[27,28,29,36,37,38,45,46,47],[30,31,32,39,40,41,48,49,50],[33,34,35,42,43,44,51,52,53],[54,55,56,63,64,65,72,73,74],[57,58,59,66,67,68,75,76,77],[60,61,62,69,70,71,78,79,80]];
-const SUB_CENTERS=[4,13,22,31,40,49,58,67,76],MAIN_CENTER=40;
+const ML=[[0,1,2,9,10,11,18,19,20],[3,4,5,12,13,14,21,22,23],[6,7,8,15,16,17,24,25,26],[27,28,29,36,37,38,45,46,47],[30,31,32,39,40,41,48,49,50],[33,34,35,42,43,44,51,52,53],[54,55,56,63,64,65,72,73,74],[57,58,59,66,67,68,75,76,77],[60,61,62,69,70,71,78,79,80]];
+const SC=[4,13,22,31,40,49,58,67,76],MC=40;
 function buildMandala(){
   const grid=document.getElementById('mandala-grid');grid.innerHTML='';
-  const flat=[];for(let r=0;r<9;r++)for(let c=0;c<9;c++)flat.push(MANDALA_LAYOUT[r][c]);
+  const flat=[];for(let r=0;r<9;r++)for(let c=0;c<9;c++)flat.push(ML[r][c]);
   flat.forEach(idx=>{
     const cell=document.createElement('div');cell.className='m-cell';
-    if(idx===MAIN_CENTER)cell.classList.add('center-main');
-    else if(SUB_CENTERS.includes(idx))cell.classList.add('sub-center');
-    cell.textContent=D.mandala[idx]||(idx===MAIN_CENTER?'Core Goal':'');
+    if(idx===MC)cell.classList.add('center-main');
+    else if(SC.includes(idx))cell.classList.add('sub-center');
+    cell.textContent=D.mandala[idx]||(idx===MC?'Core Goal':'');
     cell.contentEditable=true;
     cell.addEventListener('blur',e=>{D.mandala[idx]=e.target.textContent.trim();autoSave()});
     grid.appendChild(cell);
@@ -600,38 +697,81 @@ function buildMandala(){
 }
 
 /* SCHEDULE */
-function changeMonth(d){D.viewMonth.month+=d;if(D.viewMonth.month>11){D.viewMonth.month=0;D.viewMonth.year++}if(D.viewMonth.month<0){D.viewMonth.month=11;D.viewMonth.year--}renderSchedule();}
+function changeMonth(d){D.viewMonth.month+=d;if(D.viewMonth.month>11){D.viewMonth.month=0;D.viewMonth.year++}if(D.viewMonth.month<0){D.viewMonth.month=11;D.viewMonth.year--}renderSchedule()}
 function renderSchedule(){
   const {year,month}=D.viewMonth;
-  document.getElementById('month-label').textContent=new Date(year,month,1).toLocaleDateString('en-US',{year:'numeric',month:'long'});
+  document.getElementById('month-label').textContent=new Date(year,month,1).toLocaleDateString('ko-KR',{year:'numeric',month:'long'});
   const cal=document.getElementById('cal-mini');cal.innerHTML='';
-  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{const h=document.createElement('div');h.className='cal-day-h';h.textContent=d;cal.appendChild(h)});
+  ['일','월','화','수','목','금','토'].forEach(d=>{const h=document.createElement('div');h.className='cal-dh';h.textContent=d;cal.appendChild(h)});
   const first=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();
-  for(let i=0;i<first;i++){cal.appendChild(document.createElement('div'))}
+  for(let i=0;i<first;i++)cal.appendChild(document.createElement('div'));
   for(let i=1;i<=days;i++){
-    const e=document.createElement('div');e.className='cal-day';e.textContent=i;
-    if(year===now.getFullYear()&&month===now.getMonth()&&i===now.getDate())e.classList.add('today');
+    const e=document.createElement('div');e.className='cal-d';e.textContent=i;
+    const isT=year===now.getFullYear()&&month===now.getMonth()&&i===now.getDate();
+    if(isT)e.classList.add('today');
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-    if(gcalEvents.some(ev=>(ev.start.date||ev.start.dateTime||'').slice(0,10)===ds)&&!(year===now.getFullYear()&&month===now.getMonth()&&i===now.getDate()))e.classList.add('has-event');
-    e.onclick=()=>showDayEvents(ds);cal.appendChild(e);
+    if(!isT&&gcalEvents.some(ev=>(ev.start.date||ev.start.dateTime||'').slice(0,10)===ds))e.classList.add('has-ev');
+    e.onclick=()=>showDayEvs(ds);
+    cal.appendChild(e);
   }
   renderList('weekly');renderList('monthly');renderList('today_tasks');
   const m=document.getElementById('memo-area');if(m)m.value=D.memo||'';
 }
-function showDayEvents(ds){
+function showDayEvs(ds){
   const evs=gcalEvents.filter(ev=>(ev.start.date||ev.start.dateTime||'').slice(0,10)===ds);
-  const wrap=document.getElementById('gcal-day-events'),list=document.getElementById('gcal-events-list');
+  const wrap=document.getElementById('gcal-day-wrap'),list=document.getElementById('gcal-day-list');
   if(!evs.length){wrap.style.display='none';return}
   wrap.style.display='block';list.innerHTML='';
-  evs.forEach(ev=>{const row=document.createElement('div');row.className='gcal-event';const dot=document.createElement('div');dot.className='gcal-dot';const time=document.createElement('div');time.className='gcal-time';time.textContent=ev.start.dateTime?new Date(ev.start.dateTime).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}):'All day';const title=document.createElement('div');title.className='gcal-title';title.textContent=ev.summary||'(No title)';row.append(dot,time,title);list.appendChild(row);});
+  evs.forEach(ev=>{
+    const row=document.createElement('div');row.className='gcal-ev';
+    const dot=document.createElement('div');dot.className='gcal-dot';
+    const time=document.createElement('div');time.className='gcal-time';
+    time.textContent=ev.start.dateTime?new Date(ev.start.dateTime).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):'하루종일';
+    const title=document.createElement('div');title.className='gcal-title';title.textContent=ev.summary||'(제목 없음)';
+    row.append(dot,time,title);list.appendChild(row);
+  });
 }
-function addItem(key,elId){const realId=(elId||key)==='today_tasks'?'today':(elId||key);const inp=document.getElementById(realId+'-in');if(!inp||!inp.value.trim())return;if(!D[key])D[key]=[];D[key].push({text:inp.value.trim(),done:false,id:Date.now()});inp.value='';autoSave();renderList(key);}
-function renderList(key){const el=document.getElementById(key+'-list');if(!el)return;el.innerHTML='';(D[key]||[]).forEach((item,i)=>{const row=document.createElement('div');row.className='check-item';const chk=document.createElement('input');chk.type='checkbox';chk.className='check-box';chk.checked=item.done;chk.onchange=()=>{D[key][i].done=chk.checked;autoSave();renderList(key)};const txt=document.createElement('span');txt.className='check-text'+(item.done?' done':'');txt.textContent=item.text;const del=document.createElement('button');del.className='del-btn';del.textContent='×';del.onclick=()=>{D[key].splice(i,1);autoSave();renderList(key)};row.append(chk,txt,del);el.appendChild(row);});}
+function addItem(key,elId){
+  const rid=(elId||key)==='today_tasks'?'today':(elId||key);
+  const inp=document.getElementById(rid+'-in');
+  if(!inp||!inp.value.trim())return;
+  if(!D[key])D[key]=[];
+  D[key].push({text:inp.value.trim(),done:false,id:Date.now()});
+  inp.value='';autoSave();renderList(key);
+}
+function renderList(key){
+  const el=document.getElementById(key+'-list');if(!el)return;el.innerHTML='';
+  (D[key]||[]).forEach((item,i)=>{
+    const row=document.createElement('div');row.className='check-item';
+    const chk=document.createElement('input');chk.type='checkbox';chk.className='check-box';chk.checked=item.done;
+    chk.onchange=()=>{D[key][i].done=chk.checked;autoSave();renderList(key)};
+    const txt=document.createElement('span');txt.className='check-text'+(item.done?' done':'');txt.textContent=item.text;
+    const del=document.createElement('button');del.className='del-btn';del.textContent='×';
+    del.onclick=()=>{D[key].splice(i,1);autoSave();renderList(key)};
+    row.append(chk,txt,del);el.appendChild(row);
+  });
+}
 
-/* FINANCE - 거래 내역 */
+/* FINANCE */
+function getCat(id){return(D.categories||[]).find(c=>c.id===id)||{name:'기타',color:'dot-gray'}}
+function populateCatSelects(){
+  ['fin-cat','fx-cat'].forEach(sid=>{
+    const sel=document.getElementById(sid);if(!sel)return;
+    const cur=sel.value;sel.innerHTML='';
+    (D.categories||[]).forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;sel.appendChild(o)});
+    if(cur)sel.value=cur;
+  });
+}
 function initFinSel(){
   const sel=document.getElementById('fin-month-sel');if(!sel)return;sel.innerHTML='';
-  for(let i=0;i<12;i++){const m=new Date();m.setMonth(m.getMonth()-i);const val=m.toISOString().slice(0,7);const opt=document.createElement('option');opt.value=val;opt.textContent=new Date(val+'-01').toLocaleDateString('ko-KR',{year:'numeric',month:'long'});if(val===D.curMonth)opt.selected=true;sel.appendChild(opt);}
+  for(let i=0;i<12;i++){
+    const m=new Date();m.setMonth(m.getMonth()-i);
+    const val=m.toISOString().slice(0,7);
+    const opt=document.createElement('option');opt.value=val;
+    opt.textContent=new Date(val+'-01').toLocaleDateString('ko-KR',{year:'numeric',month:'long'});
+    if(val===D.curMonth)opt.selected=true;
+    sel.appendChild(opt);
+  }
   renderFinance();
 }
 function addFinance(){
@@ -654,301 +794,249 @@ function renderFinance(){
   document.getElementById('fin-income').textContent='₩'+income.toLocaleString();
   document.getElementById('fin-expense').textContent='₩'+expense.toLocaleString();
   const bal=income-expense;
-  const balEl=document.getElementById('fin-balance');
-  balEl.textContent=(bal<0?'-':'')+'₩'+Math.abs(bal).toLocaleString();
-  balEl.className='ms-num '+(bal>=0?'bal':'exp');
+  const be=document.getElementById('fin-balance');
+  be.textContent=(bal<0?'-':'')+'₩'+Math.abs(bal).toLocaleString();
+  be.className='sum-num '+(bal>=0?'bal':'exp');
   const list=document.getElementById('fin-list');list.innerHTML='';
-  if(!rows.length){const e=document.createElement('div');e.className='empty-state';e.textContent='No transactions this month';list.appendChild(e);return}
+  if(!rows.length){list.innerHTML='<div class="empty">이번 달 내역이 없습니다</div>';return}
   rows.slice().reverse().forEach(r=>{
     const cat=getCat(r.catId);
     const row=document.createElement('div');row.className='txn-row';
-    const dot=document.createElement('div');dot.className='txn-cat-dot '+cat.color;
+    const dot=document.createElement('div');dot.className='txn-dot '+cat.color;
     const info=document.createElement('div');info.className='txn-info';
     const desc=document.createElement('div');desc.className='txn-desc';desc.textContent=r.desc;
-    const catLabel=document.createElement('div');catLabel.className='txn-cat';catLabel.textContent=cat.name;
-    info.append(desc,catLabel);
-    const val=document.createElement('div');val.className='txn-amount '+(r.type==='income'?'inc':'exp');
+    const catl=document.createElement('div');catl.className='txn-cat';catl.textContent=cat.name;
+    info.append(desc,catl);
+    const val=document.createElement('div');val.className='txn-amt '+(r.type==='income'?'inc':'exp');
     val.textContent=(r.type==='income'?'+':'-')+'₩'+r.amount.toLocaleString();
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
-    del.onclick=()=>{const idx=D.finance.findIndex(f=>f.id===r.id);if(idx>-1){D.finance.splice(idx,1);autoSave();renderFinance();updateNetWorth();}};
+    del.onclick=()=>{const idx=D.finance.findIndex(f=>f.id===r.id);if(idx>-1){D.finance.splice(idx,1);autoSave();renderFinance();updateNetWorth()}};
     row.append(dot,info,val,del);list.appendChild(row);
   });
   updateNetWorth();
 }
-
-/* SAVINGS */
 function addSaving(){
   const name=document.getElementById('sav-name').value.trim();if(!name)return;
-  const saving={id:Date.now(),name,bank:document.getElementById('sav-bank').value.trim(),type:document.getElementById('sav-type').value,current:parseInt(document.getElementById('sav-current').value)||0,target:parseInt(document.getElementById('sav-target').value)||0,monthly:parseInt(document.getElementById('sav-monthly').value)||0,maturity:document.getElementById('sav-maturity').value};
-  if(!D.savings)D.savings=[];D.savings.push(saving);
+  if(!D.savings)D.savings=[];
+  D.savings.push({id:Date.now(),name,bank:document.getElementById('sav-bank').value.trim(),type:document.getElementById('sav-type').value,current:parseInt(document.getElementById('sav-current').value)||0,target:parseInt(document.getElementById('sav-target').value)||0,monthly:parseInt(document.getElementById('sav-monthly').value)||0,maturity:document.getElementById('sav-maturity').value});
   ['sav-name','sav-bank','sav-current','sav-target','sav-monthly','sav-maturity'].forEach(id=>document.getElementById(id).value='');
   autoSave();renderSavings();updateNetWorth();
 }
 function renderSavings(){
   const list=document.getElementById('savings-list');if(!list)return;list.innerHTML='';
-  if(!D.savings||!D.savings.length){const e=document.createElement('div');e.className='empty-state';e.textContent='등록된 적금·예금이 없습니다';list.appendChild(e);return}
-  const TYPE_LABELS={saving:'적금',deposit:'예금',investment:'투자',cash:'현금'};
-  const TYPE_PILLS={saving:'pill-blue',deposit:'pill-green',investment:'pill-gold',cash:'pill-gray'};
+  if(!D.savings||!D.savings.length){list.innerHTML='<div class="empty">등록된 적금·예금이 없습니다</div>';return}
+  const TL={saving:'적금',deposit:'예금',investment:'투자',cash:'현금'};
+  const TP={saving:'pill-blue',deposit:'pill-green',investment:'pill-gold',cash:'pill-gray'};
   D.savings.forEach((s,i)=>{
     const card=document.createElement('div');card.className='saving-card';
-    const header=document.createElement('div');header.className='saving-header';
+    const hdr=document.createElement('div');hdr.style.cssText='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px';
     const info=document.createElement('div');
-    const name=document.createElement('div');name.className='saving-name';name.textContent=s.name;
-    const bank=document.createElement('div');bank.className='saving-bank';bank.textContent=s.bank||'';
-    info.append(name,bank);
-    const right=document.createElement('div');right.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0';
-    const typePill=document.createElement('span');typePill.className='pill '+(TYPE_PILLS[s.type]||'pill-gray');typePill.textContent=TYPE_LABELS[s.type]||s.type;
-    const delBtn=document.createElement('button');delBtn.className='del-btn';delBtn.textContent='×';
-    delBtn.onclick=()=>{D.savings.splice(i,1);autoSave();renderSavings();updateNetWorth()};
-    right.append(typePill,delBtn);header.append(info,right);
-    const currentEl=document.createElement('div');currentEl.style.cssText='font-size:24px;font-weight:600;letter-spacing:-0.374px;color:var(--blue);margin-bottom:6px';currentEl.textContent='₩'+s.current.toLocaleString();
-    card.append(header,currentEl);
+    const n=document.createElement('div');n.style.cssText='font-size:16px;font-weight:600;letter-spacing:-0.2px';n.textContent=s.name;
+    const b=document.createElement('div');b.className='caption';b.style.marginTop='2px';b.textContent=s.bank||'';
+    info.append(n,b);
+    const right=document.createElement('div');right.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:6px';
+    const tp=document.createElement('span');tp.className='pill '+(TP[s.type]||'pill-gray');tp.textContent=TL[s.type]||s.type;
+    const del=document.createElement('button');del.className='del-btn';del.textContent='×';
+    del.onclick=()=>{D.savings.splice(i,1);autoSave();renderSavings();updateNetWorth()};
+    right.append(tp,del);hdr.append(info,right);
+    const cur=document.createElement('div');cur.style.cssText='font-size:22px;font-weight:600;letter-spacing:-0.374px;color:var(--blue);margin-bottom:4px';cur.textContent='₩'+s.current.toLocaleString();
+    card.append(hdr,cur);
     if(s.target>0){
       const pct=Math.min(100,Math.round(s.current/s.target*100));
-      const bar=document.createElement('div');bar.className='progress-bar';
-      const fill=document.createElement('div');fill.className='progress-fill';fill.style.width=pct+'%';
-      bar.appendChild(fill);
-      const meta=document.createElement('div');meta.className='saving-meta';
-      meta.innerHTML=`<span>목표 ₩${s.target.toLocaleString()}</span><span>${pct}%</span>`;
-      card.append(bar,meta);
+      const pb=document.createElement('div');pb.className='prog-bar';
+      const pf=document.createElement('div');pf.className='prog-fill';pf.style.width=pct+'%';pb.appendChild(pf);
+      const mt=document.createElement('div');mt.style.cssText='display:flex;justify-content:space-between;font-size:12px;color:var(--ink48)';
+      mt.innerHTML=`<span>목표 ₩${s.target.toLocaleString()}</span><span>${pct}%</span>`;
+      card.append(pb,mt);
     }
-    const bottom=document.createElement('div');bottom.style.cssText='display:flex;gap:16px;margin-top:10px;flex-wrap:wrap';
-    if(s.monthly>0){const m=document.createElement('span');m.className='caption';m.textContent='월 ₩'+s.monthly.toLocaleString();bottom.appendChild(m)}
-    if(s.maturity){const d=document.createElement('span');d.className='caption';d.textContent='만기 '+s.maturity;bottom.appendChild(d)}
-    if(bottom.children.length)card.appendChild(bottom);
-    /* 현재 금액 수정 */
-    const editRow=document.createElement('div');editRow.style.cssText='display:flex;gap:8px;margin-top:12px;align-items:center';
+    const bot=document.createElement('div');bot.style.cssText='display:flex;gap:14px;margin-top:8px;flex-wrap:wrap';
+    if(s.monthly>0){const m=document.createElement('span');m.className='caption';m.textContent='월 ₩'+s.monthly.toLocaleString();bot.appendChild(m)}
+    if(s.maturity){const d=document.createElement('span');d.className='caption';d.textContent='만기 '+s.maturity;bot.appendChild(d)}
+    if(bot.children.length)card.appendChild(bot);
+    const er=document.createElement('div');er.style.cssText='display:flex;gap:8px;margin-top:10px;align-items:center';
     const inp=document.createElement('input');inp.className='field';inp.style.flex='1';inp.type='number';inp.inputMode='numeric';inp.placeholder='현재 금액 업데이트';
-    const upd=document.createElement('button');upd.className='btn-primary btn-sm';upd.textContent='Update';
+    const upd=document.createElement('button');upd.className='btn btn-primary btn-sm';upd.textContent='Update';
     upd.onclick=()=>{const v=parseInt(inp.value);if(!isNaN(v)){D.savings[i].current=v;autoSave();renderSavings();updateNetWorth()}};
-    editRow.append(inp,upd);card.appendChild(editRow);
+    er.append(inp,upd);card.appendChild(er);
     list.appendChild(card);
   });
 }
-
-/* FIXED COSTS */
 function addFixed(){
   const name=document.getElementById('fx-name').value.trim();if(!name)return;
-  const fixed={id:Date.now(),name,amount:parseInt(document.getElementById('fx-amount').value)||0,catId:document.getElementById('fx-cat').value,day:document.getElementById('fx-day').value};
-  if(!D.fixedCosts)D.fixedCosts=[];D.fixedCosts.push(fixed);
+  if(!D.fixedCosts)D.fixedCosts=[];
+  D.fixedCosts.push({id:Date.now(),name,amount:parseInt(document.getElementById('fx-amount').value)||0,catId:document.getElementById('fx-cat').value,day:document.getElementById('fx-day').value});
   ['fx-name','fx-amount','fx-day'].forEach(id=>document.getElementById(id).value='');
   autoSave();renderFixed();updateNetWorth();
 }
 function renderFixed(){
   const list=document.getElementById('fixed-list');if(!list)return;list.innerHTML='';
-  if(!D.fixedCosts||!D.fixedCosts.length){const e=document.createElement('div');e.className='empty-state';e.textContent='등록된 고정 지출이 없습니다';list.appendChild(e);return}
+  if(!D.fixedCosts||!D.fixedCosts.length){list.innerHTML='<div class="empty">등록된 고정 지출이 없습니다</div>';return}
   const card=document.createElement('div');card.className='card';
   D.fixedCosts.forEach((f,i)=>{
-    const row=document.createElement('div');row.className='fixed-row';
-    const dot=document.createElement('div');dot.className='cat-dot '+getCatColorClass(f.catId);
+    const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--hairline)';
+    const dot=document.createElement('div');dot.className='cat-dot '+getCat(f.catId).color;
     const info=document.createElement('div');info.style.flex='1';
-    const name=document.createElement('div');name.className='fixed-name';name.textContent=f.name;
-    const cat=document.createElement('div');cat.className='fixed-cat';cat.textContent=getCat(f.catId).name+(f.day?' · 매월 '+f.day+'일':'');
-    info.append(name,cat);
-    const amount=document.createElement('div');amount.className='fixed-amount';amount.textContent='₩'+f.amount.toLocaleString();
+    const n=document.createElement('div');n.style.cssText='font-size:16px;letter-spacing:-0.2px';n.textContent=f.name;
+    const c=document.createElement('div');c.className='caption';c.textContent=getCat(f.catId).name+(f.day?' · 매월 '+f.day+'일':'');
+    info.append(n,c);
+    const amt=document.createElement('div');amt.style.cssText='font-size:16px;font-weight:600;color:var(--orange);letter-spacing:-0.2px';amt.textContent='₩'+f.amount.toLocaleString();
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
     del.onclick=()=>{D.fixedCosts.splice(i,1);autoSave();renderFixed();updateNetWorth()};
-    row.append(dot,info,amount,del);card.appendChild(row);
+    row.append(dot,info,amt,del);card.appendChild(row);
   });
   list.appendChild(card);
 }
-
-/* CATEGORIES */
 function addCategory(){
   const name=document.getElementById('cat-name').value.trim();if(!name)return;
-  const cat={id:'cat_'+Date.now(),name,color:document.getElementById('cat-color').value};
-  if(!D.categories)D.categories=[];D.categories.push(cat);
+  if(!D.categories)D.categories=[];
+  D.categories.push({id:'cat_'+Date.now(),name,color:document.getElementById('cat-color').value});
   document.getElementById('cat-name').value='';
   autoSave();renderCats();populateCatSelects();
 }
 function renderCats(){
   const list=document.getElementById('cats-list');if(!list)return;list.innerHTML='';
-  if(!D.categories||!D.categories.length){const e=document.createElement('div');e.className='empty-state';e.textContent='카테고리가 없습니다';list.appendChild(e);return}
+  if(!D.categories||!D.categories.length){list.innerHTML='<div class="empty">카테고리가 없습니다</div>';return}
   D.categories.forEach((c,i)=>{
     const row=document.createElement('div');row.className='cat-item';
     const dot=document.createElement('div');dot.className='cat-dot '+c.color;
-    const name=document.createElement('div');name.className='cat-name';name.textContent=c.name;
+    const name=document.createElement('div');name.style.cssText='flex:1;font-size:16px;letter-spacing:-0.2px';name.textContent=c.name;
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
     del.onclick=()=>{D.categories.splice(i,1);autoSave();renderCats();populateCatSelects()};
     row.append(dot,name,del);list.appendChild(row);
   });
 }
 function renderCatsBreakdown(){
-  const el=document.getElementById('cats-breakdown');const lbl=document.getElementById('cat-month-label');if(!el)return;
-  const month=D.curMonth;lbl.textContent=new Date(month+'-01').toLocaleDateString('ko-KR',{year:'numeric',month:'long'})+' 지출';
-  const rows=(D.finance||[]).filter(f=>f.month===month&&f.type==='expense');
+  const el=document.getElementById('cats-breakdown');if(!el)return;
+  const rows=(D.finance||[]).filter(f=>f.month===D.curMonth&&f.type==='expense');
   const bycat={};rows.forEach(r=>{bycat[r.catId]=(bycat[r.catId]||0)+r.amount});
   el.innerHTML='';
-  if(!Object.keys(bycat).length){el.innerHTML='<div class="empty-state">지출 내역이 없습니다</div>';return}
-  const sorted=Object.entries(bycat).sort((a,b)=>b[1]-a[1]);
-  sorted.forEach(([catId,amt])=>{
+  if(!Object.keys(bycat).length){el.innerHTML='<div class="empty" style="padding:16px 0">지출 내역이 없습니다</div>';return}
+  Object.entries(bycat).sort((a,b)=>b[1]-a[1]).forEach(([catId,amt])=>{
     const cat=getCat(catId);
     const row=document.createElement('div');row.className='cat-item';
     const dot=document.createElement('div');dot.className='cat-dot '+cat.color;
-    const name=document.createElement('div');name.className='cat-name';name.textContent=cat.name;
-    const amount=document.createElement('div');amount.className='cat-amount';amount.textContent='₩'+amt.toLocaleString();
+    const name=document.createElement('div');name.style.cssText='flex:1;font-size:16px;letter-spacing:-0.2px';name.textContent=cat.name;
+    const amount=document.createElement('div');amount.style.cssText='font-size:16px;font-weight:600;color:var(--red);letter-spacing:-0.2px';amount.textContent='₩'+amt.toLocaleString();
     row.append(dot,name,amount);el.appendChild(row);
   });
 }
-
-/* NET WORTH */
 function updateNetWorth(){
-  const savTotal=(D.savings||[]).reduce((a,b)=>a+b.current,0);
-  const fixTotal=(D.fixedCosts||[]).reduce((a,b)=>a+b.amount,0);
-  const netWorth=savTotal;
-  document.getElementById('net-worth').textContent='₩'+netWorth.toLocaleString();
-  document.getElementById('net-worth-sub').textContent='적금·예금 기준';
-  document.getElementById('total-savings').textContent='₩'+savTotal.toLocaleString();
-  document.getElementById('total-fixed').textContent='₩'+fixTotal.toLocaleString()+'/mo';
+  const st=(D.savings||[]).reduce((a,b)=>a+b.current,0);
+  const ft=(D.fixedCosts||[]).reduce((a,b)=>a+b.amount,0);
+  document.getElementById('net-worth').textContent='₩'+st.toLocaleString();
+  document.getElementById('total-savings').textContent='₩'+st.toLocaleString();
+  document.getElementById('total-fixed').textContent='₩'+ft.toLocaleString()+'/mo';
 }
 
 /* NOTES */
-function addNote(){const txt=document.getElementById('note-input').value.trim();if(!txt)return;if(!D.notes)D.notes=[];D.notes.unshift({id:Date.now(),text:txt,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),resolved:false});document.getElementById('note-input').value='';autoSave();renderNotes();}
+function addNote(){
+  const txt=document.getElementById('note-input').value.trim();if(!txt)return;
+  if(!D.notes)D.notes=[];
+  D.notes.unshift({id:Date.now(),text:txt,date:new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'}),resolved:false});
+  document.getElementById('note-input').value='';autoSave();renderNotes();
+}
 function renderNotes(){
   const list=document.getElementById('notes-list');list.innerHTML='';
-  if(!D.notes||!D.notes.length){const e=document.createElement('div');e.className='empty-state';e.textContent='No thoughts recorded yet';list.appendChild(e);return}
+  if(!D.notes||!D.notes.length){list.innerHTML='<div class="empty">기록된 잡념이 없습니다</div>';return}
   D.notes.forEach((n,i)=>{
     const card=document.createElement('div');card.className='note-card'+(n.resolved?' resolved':'');
-    const meta=document.createElement('div');meta.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap';
-    const badge=document.createElement('span');badge.className='pill '+(n.resolved?'pill-gray':'pill-blue');badge.textContent=n.resolved?'Resolved':'Open';
+    const meta=document.createElement('div');meta.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap';
+    const badge=document.createElement('span');badge.className='pill '+(n.resolved?'pill-gray':'pill-blue');badge.textContent=n.resolved?'해결됨':'미해결';
     const date=document.createElement('span');date.className='caption';date.textContent=n.date;
     meta.append(badge,date);
-    const body=document.createElement('div');body.style.cssText='font-size:17px;letter-spacing:-0.374px;line-height:1.47;word-break:keep-all;margin-bottom:12px';body.textContent=n.text;
-    const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px;flex-wrap:wrap;align-items:center';
-    const tog=document.createElement('button');tog.className=n.resolved?'btn-ghost btn-sm':'btn-primary btn-sm';tog.textContent=n.resolved?'Reopen':'Mark resolved';tog.onclick=()=>{D.notes[i].resolved=!n.resolved;autoSave();renderNotes()};
-    const del=document.createElement('button');del.className='del-btn';del.textContent='×';del.onclick=()=>{D.notes.splice(i,1);autoSave();renderNotes()};
+    const body=document.createElement('div');body.style.cssText='font-size:16px;letter-spacing:-0.2px;line-height:1.47;word-break:keep-all;margin-bottom:10px';body.textContent=n.text;
+    const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px;align-items:center;flex-wrap:wrap';
+    const tog=document.createElement('button');tog.className=n.resolved?'btn btn-ghost btn-sm':'btn btn-primary btn-sm';
+    tog.textContent=n.resolved?'다시 열기':'해결 완료';
+    tog.onclick=()=>{D.notes[i].resolved=!n.resolved;autoSave();renderNotes()};
+    const del=document.createElement('button');del.className='del-btn';del.textContent='×';
+    del.onclick=()=>{D.notes.splice(i,1);autoSave();renderNotes()};
     actions.append(tog,del);card.append(meta,body,actions);list.appendChild(card);
   });
 }
 
 /* DIARY */
-const QUESTIONS=['지금 이 순간 가장 솔직한 당신의 감정은?','오늘 당신이 가장 감사한 것은 무엇인가요?','10년 뒤의 나에게 편지를 쓴다면?','당신의 삶에서 가장 중요한 가치는?','오늘 실패에서 배운 것은?','지금 당장 그만두고 싶은 것은?','당신이 진정으로 원하는 삶은?','오늘 하루를 색으로 표현하면?','행복을 방해하는 가장 큰 요소는?','절대 타협할 수 없는 한 가지는?','누군가에게 전하지 못한 말은?','가장 의미 있는 루틴과 없는 루틴은?','이상적인 나와 지금의 나의 차이는?','오늘 가장 살아있음을 느낀 순간은?','지금 가장 두려운 것은?','What brings you genuine joy?','If today were your last, what would matter?','What belief are you ready to release?','Where are you playing it too safe?','What would you do if failure were impossible?','What does success mean to you — really?','Who do you want to become in 5 years?','What are you avoiding and why?','What truth are you afraid to speak?','Where are you pretending to be okay?','What do you need more of in your life?','What do you need less of?','What would your future self thank you for?','What small habit could change everything?','Where is your energy being wasted?','What makes you feel most alive?','What are you most proud of this week?','What conversation have you been putting off?','What would you do differently if you started over?','What does your ideal day look like?','Where do you feel most at home?','What is your relationship with money?','What does rest mean to you?','What are you still holding onto that you should let go?','Who inspires you and why?','What does love mean to you?','What do you owe yourself an apology for?','What are you learning about yourself lately?','What would you tell your 16-year-old self?','What legacy do you want to leave?','What boundaries do you need to set?','Where are you not being honest with yourself?','What does courage look like for you today?','What are your three non-negotiables?','How are you taking care of your body?','How are you taking care of your mind?','What does your inner critic say most often?','What does your inner champion say?','When do you feel most confident?','What drains you the most?','What fills you up the most?','What do you want your life to stand for?','What is the kindest thing you could do for yourself right now?','What are you grateful for that you often overlook?','What question are you afraid to answer?','What does your best version of yourself look like?','Where are you self-sabotaging?','What do you need to forgive yourself for?','What do you need to forgive someone else for?','What does home feel like to you?','What do you want more adventure in?','What parts of yourself do you hide?','What do you want people to say about you at your funeral?','What gives your life meaning?','What are you currently obsessing over?','What are you undervaluing about yourself?','What would you do if no one was watching?','What is the hardest decision you are facing?','What do you need to hear right now?','What do you keep putting off?','Where in your life do you feel stuck?','What story are you telling yourself that might not be true?','What does your gut say about a decision you are facing?','What would love do in your current situation?','What scares you about the future?','What excites you about the future?','What do you wish you had started sooner?','What is one thing you could stop doing to feel better?','What does a meaningful friendship look like to you?','What does a meaningful relationship look like to you?','What are you doing just to please others?','What brings you peace?','What disrupts your peace?','What do you want to create in the world?','What would simplifying your life look like?','오늘 나에게 필요한 한 가지 말은?','내가 가장 행복했던 기억은?','지금 나에게 가장 부족한 것은?','나를 가장 오래 붙잡고 있는 걱정은?','오늘 누군가에게 고마움을 느꼈다면?','내가 진짜 원하는 직업은 무엇인가?','나에게 성공이란 무엇인가?','나는 왜 지금 이 일을 하고 있는가?','내 삶에서 지금 가장 잘 되어가는 것은?','내 삶에서 가장 바꾸고 싶은 것은?','What habit are you most proud of building?','What habit are you most ashamed of keeping?','What do you wish you were better at?','What are you actually really good at?','What does your creativity want to express?','When were you last truly present?','What memory makes you smile instantly?','What would you regret not trying?','How are your relationships nourishing you?','Where do you need to be more vulnerable?','What does your body need today?','What does your soul need today?','What does your mind need today?','What are you reading into a situation that might not be there?','What assumption are you ready to challenge?','What new belief would change your life?','What old belief is holding you back?','If money were no object, how would you spend your time?','What would you do with an extra hour every day?','What would you do with an extra year?','Who in your life truly sees you?','Who do you truly see?','Where are you giving more than you receive?','Where are you receiving more than you give?','What does vulnerability feel like for you?','What does strength feel like for you?','When do you feel most yourself?','When do you feel least yourself?','What do you want to learn next?','What skill would change your life if you mastered it?','What is your relationship with silence?','What is your relationship with solitude?','What is your relationship with failure?','What is your relationship with success?','What does growth feel like?','What does stagnation feel like?','What are you pretending not to know?','What would radical honesty change in your life?','What would radical kindness change in your life?','What would radical discipline change in your life?','How do you want to feel at the end of this year?','What needs to happen for you to feel that way?','What is the one thing that would make everything else easier?','What are you doing just out of habit?','What are you doing out of genuine desire?','What are you doing out of fear?','What are you doing out of love?','What does your ideal morning look like?','What does your ideal evening look like?','What does your ideal week look like?','If you could change one thing about your past, what would it be?','What has your greatest pain taught you?','What has your greatest joy taught you?','What would you do if you weren't afraid of judgment?','What would you do if you knew you were enough?','What do you want your life to feel like, not look like?','What makes you uniquely you?','What do you want to be remembered for in 10 years?','What conversation would change your life?','What truth are you finally ready to face?','오늘 내가 가장 잘한 일은?','오늘 내가 가장 못한 일은?','지금 나의 에너지 레벨은 어떤가?','내가 진심으로 즐기는 일은 무엇인가?','나를 성장시키는 관계는 무엇인가?','나를 소모시키는 관계는 무엇인가?','지금 나에게 가장 필요한 용기는?','내 삶에서 우선순위가 뒤바뀐 것은?','나는 지금 어디를 향해 가고 있는가?','내가 포기하고 싶을 때 나를 붙잡는 것은?','What does it mean to live fully?','What does it mean to love fully?','What does it mean to work meaningfully?','What does it mean to rest deeply?','What does it mean to be truly free?','What story do you want your life to tell?','What chapter of your life are you in now?','What chapter would you like to begin?','What would you have to believe to pursue your biggest dream?','What is the life only you can live?'];
-let curQ=QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
-function newQuestion(){curQ=QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];document.getElementById('diary-question').textContent=curQ}
-function saveDiary(){const text=document.getElementById('diary-area').value.trim();if(!text)return;if(!D.diary)D.diary=[];D.diary.unshift({id:Date.now(),date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),question:curQ,text});document.getElementById('diary-area').value='';autoSave();renderDiary();newQuestion();}
+const QS=['지금 이 순간 가장 솔직한 당신의 감정은?','오늘 당신이 가장 감사한 것은 무엇인가요?','10년 뒤의 나에게 편지를 쓴다면?','당신의 삶에서 가장 중요한 가치는?','오늘 실패에서 배운 것은?','지금 당장 그만두고 싶은 것은?','당신이 진정으로 원하는 삶은?','오늘 하루를 색으로 표현하면?','행복을 방해하는 가장 큰 요소는?','절대 타협할 수 없는 한 가지는?','누군가에게 전하지 못한 말은?','가장 의미 있는 루틴과 없는 루틴은?','이상적인 나와 지금의 나의 차이는?','오늘 가장 살아있음을 느낀 순간은?','지금 가장 두려운 것은?','What brings you genuine joy?','If today were your last, what would matter?','What belief are you ready to release?','Where are you playing it too safe?','What would you do if failure were impossible?','What does success mean to you — really?','Who do you want to become in 5 years?','What are you avoiding and why?','What truth are you afraid to speak?','Where are you pretending to be okay?','What do you need more of in your life?','What do you need less of?','What would your future self thank you for?','What small habit could change everything?','Where is your energy being wasted?','What makes you feel most alive?','What are you most proud of this week?','What conversation have you been putting off?','What would you do differently if you started over?','What does your ideal day look like?','What is your relationship with money?','What does rest mean to you?','What are you still holding onto?','Who inspires you and why?','What does love mean to you?','What do you owe yourself an apology for?','What are you learning about yourself lately?','What would you tell your 16-year-old self?','What legacy do you want to leave?','What boundaries do you need to set?','Where are you not being honest with yourself?','What does courage look like for you today?','How are you taking care of your body?','How are you taking care of your mind?','What does your inner critic say most often?','When do you feel most confident?','What drains you the most?','What fills you up the most?','What do you want your life to stand for?','What are you grateful for that you often overlook?','What does your best version of yourself look like?','Where are you self-sabotaging?','What do you need to forgive yourself for?','What do you need to forgive someone else for?','What do you want more adventure in?','What parts of yourself do you hide?','What gives your life meaning?','What would you do if no one was watching?','What is the hardest decision you are facing?','What do you need to hear right now?','What do you keep putting off?','Where in your life do you feel stuck?','What would love do in your current situation?','What scares you about the future?','What excites you about the future?','What do you wish you had started sooner?','What brings you peace?','What disrupts your peace?','What would simplifying your life look like?','오늘 나에게 필요한 한 가지 말은?','내가 가장 행복했던 기억은?','지금 나에게 가장 부족한 것은?','나를 가장 오래 붙잡고 있는 걱정은?','내가 진짜 원하는 직업은 무엇인가?','나에게 성공이란 무엇인가?','나는 왜 지금 이 일을 하고 있는가?','내 삶에서 가장 바꾸고 싶은 것은?','What habit are you most proud of building?','What do you wish you were better at?','What are you actually really good at?','When were you last truly present?','What memory makes you smile instantly?','What would you regret not trying?','Where do you need to be more vulnerable?','What does your body need today?','What does your soul need today?','What does your mind need today?','What assumption are you ready to challenge?','What new belief would change your life?','What old belief is holding you back?','If money were no object, how would you spend your time?','What would you do with an extra hour every day?','Who in your life truly sees you?','Where are you giving more than you receive?','When do you feel most yourself?','When do you feel least yourself?','What do you want to learn next?','What skill would change your life if you mastered it?','What is your relationship with silence?','What is your relationship with failure?','What is your relationship with success?','What does growth feel like?','What are you pretending not to know?','What would radical honesty change in your life?','What would radical discipline change in your life?','How do you want to feel at the end of this year?','What is the one thing that would make everything else easier?','What are you doing just out of habit?','What are you doing out of fear?','What are you doing out of love?','What does your ideal morning look like?','What does your ideal week look like?','What has your greatest pain taught you?','What has your greatest joy taught you?','What would you do if you knew you were enough?','What makes you uniquely you?','What conversation would change your life?','오늘 내가 가장 잘한 일은?','오늘 내가 가장 못한 일은?','내가 진심으로 즐기는 일은 무엇인가?','나를 성장시키는 관계는 무엇인가?','나를 소모시키는 관계는 무엇인가?','지금 나에게 가장 필요한 용기는?','내 삶에서 우선순위가 뒤바뀐 것은?','나는 지금 어디를 향해 가고 있는가?','내가 포기하고 싶을 때 나를 붙잡는 것은?','What does it mean to live fully?','What does it mean to love fully?','What does it mean to work meaningfully?','What does it mean to be truly free?','What story do you want your life to tell?','What chapter of your life are you in now?','What would you have to believe to pursue your biggest dream?','What is the life only you can live?'];
+let curQ=QS[Math.floor(Math.random()*QS.length)];
+function newQuestion(){curQ=QS[Math.floor(Math.random()*QS.length)];document.getElementById('diary-question').textContent=curQ}
+function saveDiary(){
+  const text=document.getElementById('diary-area').value.trim();if(!text)return;
+  if(!D.diary)D.diary=[];
+  D.diary.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),question:curQ,text});
+  document.getElementById('diary-area').value='';autoSave();renderDiary();newQuestion();
+}
 function renderDiary(){
   document.getElementById('diary-question').textContent=curQ;
-  const container=document.getElementById('diary-entries');container.innerHTML='';
+  const c=document.getElementById('diary-entries');c.innerHTML='';
   if(!D.diary||!D.diary.length)return;
-  const hdr=document.createElement('div');hdr.className='sec-title';hdr.style.marginBottom='14px';hdr.textContent='Past entries';container.appendChild(hdr);
+  const h=document.createElement('div');h.className='sec-title';h.style.marginBottom='12px';h.textContent='지난 일기';c.appendChild(h);
   D.diary.forEach(e=>{
-    const card=document.createElement('div');card.className='card card-sm';card.style.marginBottom='12px';
-    const date=document.createElement('div');date.style.cssText='font-size:12px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:var(--ink48);margin-bottom:6px';date.textContent=e.date;
-    const q=document.createElement('div');q.style.cssText='font-size:14px;font-style:italic;color:var(--blue);margin-bottom:10px;letter-spacing:-0.224px;line-height:1.4';q.textContent='Q. '+e.question;
-    const text=document.createElement('div');text.style.cssText='font-size:17px;letter-spacing:-0.374px;line-height:1.47;word-break:keep-all';text.textContent=e.text;
-    card.append(date,q,text);container.appendChild(card);
+    const card=document.createElement('div');card.className='card card-sm';card.style.marginBottom='10px';
+    const date=document.createElement('div');date.style.cssText='font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink48);margin-bottom:5px';date.textContent=e.date;
+    const q=document.createElement('div');q.style.cssText='font-size:13px;font-style:italic;color:var(--blue);margin-bottom:8px;letter-spacing:-0.1px;line-height:1.4';q.textContent='Q. '+e.question;
+    const txt=document.createElement('div');txt.style.cssText='font-size:16px;letter-spacing:-0.2px;line-height:1.47;word-break:keep-all';txt.textContent=e.text;
+    card.append(date,q,txt);c.appendChild(card);
   });
 }
 
 /* JOBS */
-const STATUS_LABELS={apply:'Planning',doc:'Applied',interview:'Interview',result:'Awaiting'};
+const SL={apply:'Planning',doc:'Applied',interview:'Interview',result:'Awaiting'};
 function addJob(){
-  const company=document.getElementById('j-company').value.trim(),title=document.getElementById('j-title').value.trim();if(!company||!title)return;
-  if(!D.jobs)D.jobs=[];D.jobs.unshift({id:Date.now(),company,title,deadline:document.getElementById('j-deadline').value,status:document.getElementById('j-status').value,essay:document.getElementById('j-essay').value.trim(),items:[]});
+  const company=document.getElementById('j-company').value.trim(),title=document.getElementById('j-title').value.trim();
+  if(!company||!title)return;
+  if(!D.jobs)D.jobs=[];
+  D.jobs.unshift({id:Date.now(),company,title,deadline:document.getElementById('j-deadline').value,status:document.getElementById('j-status').value,essay:document.getElementById('j-essay').value.trim(),items:[]});
   ['j-company','j-title','j-deadline','j-essay'].forEach(id=>document.getElementById(id).value='');
   autoSave();renderJobs();
 }
-function addJobItem(jobId){const inp=document.getElementById('ji-'+jobId);if(!inp||!inp.value.trim())return;const job=D.jobs.find(j=>j.id===jobId);if(!job)return;if(!job.items)job.items=[];job.items.push({text:inp.value.trim(),done:false});inp.value='';autoSave();renderJobs();}
+function addJobItem(jobId){
+  const inp=document.getElementById('ji-'+jobId);if(!inp||!inp.value.trim())return;
+  const job=D.jobs.find(j=>j.id===jobId);if(!job)return;
+  if(!job.items)job.items=[];
+  job.items.push({text:inp.value.trim(),done:false});
+  inp.value='';autoSave();renderJobs();
+}
 function renderJobs(){
   const list=document.getElementById('job-list');list.innerHTML='';
-  if(!D.jobs||!D.jobs.length){const e=document.createElement('div');e.className='empty-state';e.textContent='No applications yet';list.appendChild(e);return}
+  if(!D.jobs||!D.jobs.length){list.innerHTML='<div class="empty">등록된 채용 일정이 없습니다</div>';return}
   D.jobs.forEach((job,ji)=>{
     const card=document.createElement('div');card.className='job-card';
-    const top=document.createElement('div');top.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px';
+    const top=document.createElement('div');top.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px';
     const info=document.createElement('div');
-    const t=document.createElement('div');t.style.cssText='font-size:17px;font-weight:600;letter-spacing:-0.374px';t.textContent=job.company;
-    const r=document.createElement('div');r.style.cssText='font-size:17px;color:var(--ink48);letter-spacing:-0.374px;margin-top:2px';r.textContent=job.title;
+    const t=document.createElement('div');t.style.cssText='font-size:16px;font-weight:600;letter-spacing:-0.2px';t.textContent=job.company;
+    const r=document.createElement('div');r.style.cssText='font-size:15px;color:var(--ink48);letter-spacing:-0.2px;margin-top:2px';r.textContent=job.title;
     info.append(t,r);
-    const sel=document.createElement('select');sel.style.cssText='border:1px solid var(--hairline);background:var(--parchment);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--ink);outline:none;cursor:pointer;flex-shrink:0';
-    Object.entries(STATUS_LABELS).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if(v===job.status)o.selected=true;sel.appendChild(o)});
+    const sel=document.createElement('select');sel.style.cssText='border:1px solid var(--hairline);background:var(--parchment);border-radius:8px;padding:5px 8px;font-size:13px;color:var(--ink);outline:none;cursor:pointer;flex-shrink:0';
+    Object.entries(SL).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if(v===job.status)o.selected=true;sel.appendChild(o)});
     sel.onchange=()=>{D.jobs[ji].status=sel.value;autoSave()};
- 
     top.append(info,sel);card.appendChild(top);
-    if(job.deadline||job.essay){const meta=document.createElement('div');meta.style.cssText='display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px';if(job.deadline){const d=document.createElement('span');d.className='caption';d.textContent='Deadline: '+job.deadline;meta.appendChild(d)}if(job.essay){const e=document.createElement('span');e.className='caption';e.textContent='Topics: '+job.essay;meta.appendChild(e)}card.appendChild(meta)}
-    const sec=document.createElement('div');sec.style.cssText='border-top:0.5px solid var(--hairline);padding-top:12px';
-    (job.items||[]).forEach((item,ii)=>{const row=document.createElement('div');row.className='check-item';const chk=document.createElement('input');chk.type='checkbox';chk.className='check-box';chk.checked=item.done;chk.onchange=()=>{D.jobs[ji].items[ii].done=chk.checked;autoSave()};const txt=document.createElement('span');txt.className='check-text'+(item.done?' done':'');txt.textContent=item.text;const del=document.createElement('button');del.className='del-btn';del.textContent='×';del.onclick=()=>{D.jobs[ji].items.splice(ii,1);autoSave();renderJobs()};row.append(chk,txt,del);sec.appendChild(row);});
-    const addRow=document.createElement('div');addRow.style.cssText='display:flex;gap:8px;margin-top:10px;align-items:center';
-    const inp=document.createElement('input');inp.id='ji-'+job.id;inp.className='field';inp.style.flex='1';inp.placeholder='Add checklist item...';inp.onkeydown=e=>{if(e.key==='Enter')addJobItem(job.id)};
-    const addB=document.createElement('button');addB.className='btn-primary btn-sm';addB.textContent='Add';addB.onclick=()=>addJobItem(job.id);
-    const delJob=document.createElement('button');delJob.className='del-btn';delJob.textContent='×';delJob.onclick=()=>{D.jobs.splice(ji,1);autoSave();renderJobs()};
-    addRow.append(inp,addB,delJob);sec.appendChild(addRow);card.appendChild(sec);list.appendChild(card);
+    if(job.deadline||job.essay){
+      const meta=document.createElement('div');meta.style.cssText='display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px';
+      if(job.deadline){const d=document.createElement('span');d.className='caption';d.textContent='마감: '+job.deadline;meta.appendChild(d)}
+      if(job.essay){const e=document.createElement('span');e.className='caption';e.textContent='자소서: '+job.essay;meta.appendChild(e)}
+      card.appendChild(meta);
+    }
+    const sec=document.createElement('div');sec.style.cssText='border-top:0.5px solid var(--hairline);padding-top:10px';
+    (job.items||[]).forEach((item,ii)=>{
+      const row=document.createElement('div');row.className='check-item';
+      const chk=document.createElement('input');chk.type='checkbox';chk.className='check-box';chk.checked=item.done;
+      chk.onchange=()=>{D.jobs[ji].items[ii].done=chk.checked;autoSave()};
+      const txt=document.createElement('span');txt.className='check-text'+(item.done?' done':'');txt.textContent=item.text;
+      const del=document.createElement('button');del.className='del-btn';del.textContent='×';
+      del.onclick=()=>{D.jobs[ji].items.splice(ii,1);autoSave();renderJobs()};
+      row.append(chk,txt,del);sec.appendChild(row);
+    });
+    const ar=document.createElement('div');ar.style.cssText='display:flex;gap:8px;margin-top:8px;align-items:center';
+    const inp=document.createElement('input');inp.id='ji-'+job.id;inp.className='field';inp.style.flex='1';inp.placeholder='체크리스트 항목 추가...';
+    inp.onkeydown=e=>{if(e.key==='Enter')addJobItem(job.id)};
+    const ab=document.createElement('button');ab.className='btn btn-primary btn-sm';ab.textContent='추가';ab.onclick=()=>addJobItem(job.id);
+    const dj=document.createElement('button');dj.className='del-btn';dj.textContent='×';
+    dj.onclick=()=>{D.jobs.splice(ji,1);autoSave();renderJobs()};
+    ar.append(inp,ab,dj);sec.appendChild(ar);card.appendChild(sec);list.appendChild(card);
   });
 }
 
 initAll();
-
-(function(){
-  const cv=document.getElementById('logo-canvas');
-  if(!cv)return;
-  const W=280,H=160;
-  cv.width=W;cv.height=H;
-  cv.style.display='block';
-  const ctx=cv.getContext('2d');
-  let t=0;
-  function draw(t){
-    ctx.clearRect(0,0,W,H);
-    ctx.save();
-    ctx.translate(W/2,H/2);
-    ctx.rotate(-0.13);
-    const RX=105,RY=54,TUBE_R=16;
-    const squish=Math.cos(t);
-    const abs=Math.abs(squish);
-    const flip=squish<0;
-    const steps=360;
-    if(abs<0.008){ctx.restore();return;}
-    for(let i=steps-1;i>=0;i--){
-      const a=(i/steps)*Math.PI*2;
-      const nextA=((i+1)/steps)*Math.PI*2;
-      const cx0=RX*abs*Math.cos(a),cy0=RY*Math.sin(a);
-      const cx1=RX*abs*Math.cos(nextA),cy1=RY*Math.sin(nextA);
-      const tx0=-Math.sin(a)*abs,ty0=Math.cos(a)*(RY/RX);
-      const tLen=Math.sqrt(tx0*tx0+ty0*ty0);
-      const tnx=tx0/tLen,tny=ty0/tLen;
-      const nx=-tny,ny=tnx;
-      const depth=Math.cos(a+(flip?Math.PI:0));
-      const lightAngle=Math.cos(a-Math.PI*0.25);
-      const rimLight=Math.sin(a+Math.PI);
-      const tubeAngle=Math.asin(Math.max(-1,Math.min(1,depth)));
-      const visibleR=TUBE_R*Math.cos(tubeAngle);
-      const halfW=Math.max(0.3,visibleR);
-      const px0=cx0-nx*halfW,py0=cy0-ny*halfW;
-      const px1=cx0+nx*halfW,py1=cy0+ny*halfW;
-      const px2=cx1+nx*halfW,py2=cy1+ny*halfW;
-      const px3=cx1-nx*halfW,py3=cy1-ny*halfW;
-      const baseLight=depth*0.5+0.5;
-      const highlight=Math.max(0,lightAngle)*0.6;
-      const rim=Math.max(0,rimLight)*0.12;
-      const bright=Math.min(1,baseLight*0.55+highlight+rim);
-      const dark=1-bright;
-      const r=Math.round(bright*245+dark*8);
-      const g=Math.round(bright*245+dark*8);
-      const b=Math.round(bright*248+dark*10);
-      const tubeGrad=ctx.createLinearGradient(px0,py0,px1,py1);
-      const edgeDark=`rgba(${Math.round(r*0.12)},${Math.round(g*0.12)},${Math.round(b*0.12)},1)`;
-      const edgeMid=`rgba(${Math.round(r*0.55)},${Math.round(g*0.55)},${Math.round(b*0.55)},1)`;
-      const center=`rgba(${r},${g},${b},1)`;
-      const specular=`rgba(255,255,255,${0.3+bright*0.5})`;
-      tubeGrad.addColorStop(0,edgeDark);
-      tubeGrad.addColorStop(0.18,edgeMid);
-      tubeGrad.addColorStop(0.42,center);
-      tubeGrad.addColorStop(0.52,specular);
-      tubeGrad.addColorStop(0.62,center);
-      tubeGrad.addColorStop(0.82,edgeMid);
-      tubeGrad.addColorStop(1,edgeDark);
-      ctx.beginPath();
-      ctx.moveTo(px0,py0);
-      ctx.lineTo(px1,py1);
-      ctx.lineTo(px2,py2);
-      ctx.lineTo(px3,py3);
-      ctx.closePath();
-      ctx.fillStyle=tubeGrad;
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-  function loop(){t+=0.018;draw(t);requestAnimationFrame(loop);}
-  setTimeout(loop, 100);
-})();
 </script>
 </body>
 </html>
