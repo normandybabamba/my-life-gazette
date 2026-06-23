@@ -20,8 +20,9 @@
   --sans:'Inter',system-ui,-apple-system,sans-serif;
   --nanum:'Nanum Myeongjo',serif;
 }
-html,body{height:100%;overflow:hidden;background:var(--parchment)}
-body{font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+html,body{height:100%;background:var(--parchment)}
+body{font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;overflow:hidden}
+@media(min-width:768px){html,body{overflow:auto}.main-wrap{overflow:auto;height:auto;flex:1}.tab{height:auto;min-height:60vh}}
 
 .global-nav{background:#000;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
 .nav-logo{font-size:20px;font-weight:600;color:#fff;letter-spacing:-0.3px}
@@ -42,6 +43,7 @@ body{font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column
 .main-wrap{flex:1;overflow:hidden;position:relative}
 .tab{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .tab.active{display:block}
+@media(min-width:768px){.main-wrap{overflow-y:auto;height:auto;flex:1}.tab{height:auto}.tab.active{display:block;min-height:50vh}}
 .tile{padding:20px 18px 80px}
 .tile-parchment{background:var(--parchment)}
 
@@ -226,7 +228,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 <!-- MANDALA -->
 <div class="tab active tile tile-parchment" id="tab-mandala">
   <div style="background:#000;border-radius:18px;display:flex;align-items:center;justify-content:center;padding:32px 0;margin-bottom:20px">
-    <canvas id="logo-canvas" width="280" height="160"></canvas>
+    <canvas id="logo-canvas" width="280" height="160" style="width:100%;max-width:280px;height:auto"></canvas>
   </div>
   <div class="sec-header"><div><div class="display-md">Mandala Chart</div><div class="caption">Tap any cell to edit</div></div></div>
   <div class="mandala-outer"><div class="mandala-grid" id="mandala-grid"></div></div>
@@ -880,6 +882,7 @@ initAll();
   if(!cv)return;
   const ctx=cv.getContext('2d');
   const W=280,H=160;
+  cv.width=W;cv.height=H;
   let t=0;
   function draw(t){
     ctx.clearRect(0,0,W,H);
