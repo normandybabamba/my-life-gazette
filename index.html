@@ -256,20 +256,20 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 <nav class="global-nav">
   <span class="nav-logo">Life Gazette</span>
   <div class="nav-right">
-    <span class="sync-status" id="sync-status">Not signed in</span>
-    <button class="nav-btn-sm" id="btn-save" onclick="saveToGDrive()" style="display:none">Save</button>
+    <span class="sync-status" id="sync-status">로그인 필요</span>
+    <button class="nav-btn-sm" id="btn-save" onclick="saveToGDrive()" style="display:none">저장</button>
     <div id="g-signin-wrap"><div id="g-signin-btn"></div></div>
-    <button class="nav-btn-sm ghost" id="btn-signout" onclick="signOut()" style="display:none">Out</button>
+    <button class="nav-btn-sm ghost" id="btn-signout" onclick="signOut()" style="display:none">로그아웃</button>
   </div>
 </nav>
 
 <div class="sub-nav">
-  <button class="sub-tab active" onclick="showTab('mandala')">Mandala</button>
-  <button class="sub-tab" onclick="showTab('schedule')">Schedule</button>
-  <button class="sub-tab" onclick="showTab('finance')">Finance</button>
-  <button class="sub-tab" onclick="showTab('notes')">Notes</button>
-  <button class="sub-tab" onclick="showTab('diary')">Diary</button>
-  <button class="sub-tab" onclick="showTab('job')">Job Hunt</button>
+  <button class="sub-tab active" onclick="showTab('mandala')">만다라트</button>
+  <button class="sub-tab" onclick="showTab('schedule')">일정</button>
+  <button class="sub-tab" onclick="showTab('finance')">가계부</button>
+  <button class="sub-tab" onclick="showTab('notes')">잡념</button>
+  <button class="sub-tab" onclick="showTab('diary')">일기</button>
+  <button class="sub-tab" onclick="showTab('job')">취준</button>
 </div>
 
 <!-- MANDALA -->
@@ -278,7 +278,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
     <canvas id="logo-canvas" width="280" height="150"></canvas>
   </div>
   <div class="sec-hdr">
-    <div><div class="display-md">Mandala Chart</div><div class="caption">Tap any cell to edit</div></div>
+    <div><div class="display-md">만다라트 Chart</div><div class="caption">셀을 탭해서 편집하세요</div></div>
   </div>
   <div class="mandala-outer"><div class="mandala-grid" id="mandala-grid"></div></div>
 </div>
@@ -293,32 +293,32 @@ textarea.field:focus{border-color:var(--blue);outline:none}
     </div>
     <div class="cal-grid" id="cal-mini"></div>
     <div id="gcal-day-wrap" style="margin-top:12px;display:none">
-      <div class="caption mb12" style="font-weight:600">Calendar events</div>
+      <div class="caption mb12" style="font-weight:600">캘린더 일정</div>
       <div id="gcal-day-list"></div>
     </div>
   </div>
   <div class="card-grid mb16">
     <div class="card card-sm">
-      <div class="sec-title-sm mb12">Weekly</div>
-      <input class="field" id="weekly-in" placeholder="Add task..." onkeydown="if(event.key==='Enter')addItem('weekly')">
-      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('weekly')">Add</button>
+      <div class="sec-title-sm mb12">주간 계획</div>
+      <input class="field" id="weekly-in" placeholder="추가 task..." onkeydown="if(event.key==='Enter')addItem('weekly')">
+      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('weekly')">추가</button>
       <div id="weekly-list" style="margin-top:8px"></div>
     </div>
     <div class="card card-sm">
-      <div class="sec-title-sm mb12">Monthly</div>
-      <input class="field" id="monthly-in" placeholder="Add goal..." onkeydown="if(event.key==='Enter')addItem('monthly')">
-      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('monthly')">Add</button>
+      <div class="sec-title-sm mb12">월간 목표</div>
+      <input class="field" id="monthly-in" placeholder="추가 goal..." onkeydown="if(event.key==='Enter')addItem('monthly')">
+      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('monthly')">추가</button>
       <div id="monthly-list" style="margin-top:8px"></div>
     </div>
     <div class="card card-sm">
-      <div class="sec-title-sm mb12">Today</div>
-      <input class="field" id="today-in" placeholder="Add task..." onkeydown="if(event.key==='Enter')addItem('today_tasks','today')">
-      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('today_tasks','today')">Add</button>
+      <div class="sec-title-sm mb12">오늘 할 일</div>
+      <input class="field" id="today-in" placeholder="추가 task..." onkeydown="if(event.key==='Enter')addItem('today_tasks','today')">
+      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('today_tasks','today')">추가</button>
       <div id="today_tasks-list" style="margin-top:8px"></div>
     </div>
     <div class="card card-sm">
-      <div class="sec-title-sm mb12">Memo</div>
-      <textarea class="field" id="memo-area" placeholder="Quick notes..." style="min-height:90px" onblur="D.memo=this.value;autoSave()"></textarea>
+      <div class="sec-title-sm mb12">메모</div>
+      <textarea class="field" id="memo-area" placeholder="메모..." style="min-height:90px" onblur="D.memo=this.value;autoSave()"></textarea>
     </div>
   </div>
 </div>
@@ -352,16 +352,16 @@ textarea.field:focus{border-color:var(--blue);outline:none}
       <div class="sum-card"><div class="sum-label">Expense</div><div class="sum-num exp" id="fin-expense">₩0</div></div>
       <div class="sum-card"><div class="sum-label">Balance</div><div class="sum-num bal" id="fin-balance">₩0</div></div>
     </div>
-    <div style="margin-bottom:12px"><select class="select-field" id="fin-month-sel" onchange="renderFinance()"></select></div>
+    <div style="margin-bottom:12px"><select class="select-field" id="fin-month-sel" onchange="render가계부()"></select></div>
     <div class="card mb16">
-      <div class="sec-title-sm mb12">Add Transaction</div>
+      <div class="sec-title-sm mb12">거래 추가</div>
       <div class="form-group"><label class="label">Description</label><input class="field" id="fin-desc" placeholder="예: 월급, 카페"></div>
       <div class="form-row mb12">
         <div><label class="label">Amount (₩)</label><input class="field" id="fin-amount" type="number" inputmode="numeric" placeholder="0"></div>
         <div><label class="label">Type</label><select class="select-field" id="fin-type"><option value="income">수입</option><option value="expense">지출</option></select></div>
       </div>
       <div class="form-group"><label class="label">Category</label><select class="select-field" id="fin-cat"></select></div>
-      <button class="btn btn-primary btn-full" onclick="addFinance()">Add</button>
+      <button class="btn btn-primary btn-full" onclick="add가계부()">추가</button>
     </div>
     <div id="fin-list"></div>
   </div>
@@ -431,7 +431,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 
 <!-- NOTES -->
 <div class="tab" id="tab-notes">
-  <div class="display-md mb12">Thoughts</div>
+  <div class="display-md mb12">잡념 기록</div>
   <div class="caption" style="margin-bottom:18px">생각이 떠오를 때 기록하고, 해결되면 체크하세요.</div>
   <div class="card mb16">
     <textarea class="field" id="note-input" placeholder="지금 이 순간의 생각을 적으세요..."></textarea>
@@ -443,33 +443,33 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 <!-- DIARY -->
 <div class="tab" id="tab-diary">
   <div class="diary-q-card">
-    <div class="diary-q-label">Today's question</div>
+    <div class="diary-q-label">오늘 할 일's question</div>
     <div class="diary-q-text" id="diary-question"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
     <span class="caption" id="diary-date-label"></span>
-    <button class="btn btn-ghost btn-sm" onclick="newQuestion()">New question</button>
+    <button class="btn btn-ghost btn-sm" onclick="newQuestion()">새 질문</button>
   </div>
   <textarea class="field" id="diary-area" placeholder="자유롭게 써보세요..." style="min-height:200px;margin-bottom:14px"></textarea>
-  <button class="btn btn-primary btn-full" onclick="saveDiary()">Save entry</button>
+  <button class="btn btn-primary btn-full" onclick="save일기()">저장하기</button>
   <div class="divider"></div>
   <div id="diary-entries"></div>
 </div>
 
 <!-- JOB -->
 <div class="tab" id="tab-job">
-  <div class="display-md mb12">Job Hunt</div>
+  <div class="display-md mb12">취준</div>
   <div class="caption" style="margin-bottom:18px">지원 현황과 체크리스트를 관리하세요.</div>
   <div class="card mb16">
-    <div class="sec-title-sm mb12">New Application</div>
-    <div class="form-group"><label class="label">Company</label><input class="field" id="j-company" placeholder="회사명"></div>
-    <div class="form-group"><label class="label">Role</label><input class="field" id="j-title" placeholder="직무/포지션"></div>
+    <div class="sec-title-sm mb12">새 채용 등록</div>
+    <div class="form-group"><label class="label">회사명</label><input class="field" id="j-company" placeholder="회사명"></div>
+    <div class="form-group"><label class="label">직무/포지션</label><input class="field" id="j-title" placeholder="직무/포지션"></div>
     <div class="form-row mb12">
-      <div><label class="label">Deadline</label><input class="field" id="j-deadline" type="date"></div>
-      <div><label class="label">Status</label><select class="select-field" id="j-status"><option value="apply">Planning</option><option value="doc">Applied</option><option value="interview">Interview</option><option value="result">Awaiting</option></select></div>
+      <div><label class="label">마감일</label><input class="field" id="j-deadline" type="date"></div>
+      <div><label class="label">상태</label><select class="select-field" id="j-status"><option value="apply">지원 예정</option><option value="doc">서류 제출</option><option value="interview">면접</option><option value="result">결과 대기</option></select></div>
     </div>
     <div class="form-group"><label class="label">자소서 항목</label><input class="field" id="j-essay" placeholder="예: 지원동기, 장단점..."></div>
-    <button class="btn btn-primary btn-full" onclick="addJob()">Register</button>
+    <button class="btn btn-primary btn-full" onclick="addJob()">등록</button>
   </div>
   <div id="job-list"></div>
 </div>
@@ -513,7 +513,7 @@ window.addEventListener('load',()=>{
   if(tok){
     accessToken=tok;driveFileId=sessionStorage.getItem('mlg_fileid')||null;
     const em=sessionStorage.getItem('mlg_email');
-    ss(em?em.split('@')[0]:'Synced','ok');
+    ss(em?em.split('@')[0]:'동기화됨','ok');
     onSignedIn();loadFromGDrive();loadGCal();
   }
   startLogo();
@@ -523,7 +523,7 @@ function handleCredential(resp){
   const payload=JSON.parse(atob(resp.credential.split('.')[1]));
   sessionStorage.setItem('mlg_email',payload.email);
   const tc=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPE,callback:(tr)=>{
-    if(tr.error){ss('Auth failed','err');return}
+    if(tr.error){ss('인증 실패','err');return}
     accessToken=tr.access_token;sessionStorage.setItem('mlg_token',accessToken);
     ss(payload.email.split('@')[0],'ok');onSignedIn();loadFromGDrive();loadGCal();
   }});
@@ -540,7 +540,7 @@ function signOut(){
   document.getElementById('g-signin-wrap').style.display='';
   document.getElementById('btn-signout').style.display='none';
   document.getElementById('btn-save').style.display='none';
-  ss('Not signed in','');
+  ss('로그인 필요','');
 }
 
 async function findFile(){
@@ -551,7 +551,7 @@ async function findFile(){
 }
 
 async function saveToGDrive(){
-  if(!accessToken)return;ss('Saving...','');
+  if(!accessToken)return;ss('저장 중...','');
   try{
     const body=JSON.stringify(D);
     if(!driveFileId)await findFile();
@@ -564,20 +564,20 @@ async function saveToGDrive(){
       const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+accessToken},body:fd});
       const rd=await r.json();driveFileId=rd.id;sessionStorage.setItem('mlg_fileid',driveFileId);
     }
-    ss('Saved '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),'ok');
-  }catch(e){ss('Save failed','err')}
+    ss('저장됨 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),'ok');
+  }catch(e){ss('저장 실패','err')}
 }
 
 async function loadFromGDrive(){
-  if(!accessToken)return;ss('Loading...','');
+  if(!accessToken)return;ss('불러오는 중...','');
   try{
     const found=await findFile();
-    if(!found){ss('Ready','ok');initAll();return}
+    if(!found){ss('시작','ok');initAll();return}
     const r=await fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,{headers:{Authorization:'Bearer '+accessToken}});
     const data=await r.json();
     Object.keys(data).forEach(k=>{D[k]=data[k]});
-    ss('Synced','ok');initAll();
-  }catch(e){ss('Load failed','err');initAll()}
+    ss('동기화됨','ok');initAll();
+  }catch(e){ss('불러오기 실패','err');initAll()}
 }
 
 async function loadGCal(){
@@ -587,7 +587,7 @@ async function loadGCal(){
     const r=await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${s.toISOString()}&timeMax=${e.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=50`,{headers:{Authorization:'Bearer '+accessToken}});
     const d=await r.json();
     gcalEvents=(d.items||[]).filter(e=>e.status!=='cancelled');
-    if(document.getElementById('tab-schedule').style.display!=='none')renderSchedule();
+    if(document.getElementById('tab-schedule').style.display!=='none')render일정();
   }catch(e){}
 }
 
@@ -595,7 +595,7 @@ function autoSave(){clearTimeout(autoSaveTimer);autoSaveTimer=setTimeout(()=>{if
 
 function initAll(){
   if(!D.categories||!D.categories.length)D.categories=[...DEFAULT_CATS];
-  buildMandala();initFinSel();renderSchedule();populateCatSelects();
+  build만다라트();initFinSel();render일정();populateCatSelects();
 }
 
 function showTab(name){
@@ -604,10 +604,10 @@ function showTab(name){
   document.getElementById('tab-'+name).classList.add('active');
   const tabs=['mandala','schedule','finance','notes','diary','job'];
   document.querySelectorAll('.sub-tab')[tabs.indexOf(name)].classList.add('active');
-  if(name==='schedule')renderSchedule();
-  if(name==='finance'){renderFinance();renderSavings();renderFixed();renderCats();}
-  if(name==='notes')renderNotes();
-  if(name==='diary')renderDiary();
+  if(name==='schedule')render일정();
+  if(name==='finance'){render가계부();renderSavings();renderFixed();renderCats();}
+  if(name==='notes')render잡념();
+  if(name==='diary')render일기();
   if(name==='job')renderJobs();
 }
 
@@ -617,7 +617,7 @@ function showFinTab(name){
   document.getElementById('fin-'+name).classList.add('active');
   const tabs=['txn','savings','fixed','cats'];
   document.querySelectorAll('.fin-tab')[tabs.indexOf(name)].classList.add('active');
-  if(name==='txn')renderFinance();
+  if(name==='txn')render가계부();
   if(name==='savings')renderSavings();
   if(name==='fixed')renderFixed();
   if(name==='cats'){renderCats();renderCatsBreakdown();}
@@ -682,14 +682,14 @@ function startLogo(){
 /* MANDALA */
 const ML=[[0,1,2,9,10,11,18,19,20],[3,4,5,12,13,14,21,22,23],[6,7,8,15,16,17,24,25,26],[27,28,29,36,37,38,45,46,47],[30,31,32,39,40,41,48,49,50],[33,34,35,42,43,44,51,52,53],[54,55,56,63,64,65,72,73,74],[57,58,59,66,67,68,75,76,77],[60,61,62,69,70,71,78,79,80]];
 const SC=[4,13,22,31,40,49,58,67,76],MC=40;
-function buildMandala(){
+function build만다라트(){
   const grid=document.getElementById('mandala-grid');grid.innerHTML='';
   const flat=[];for(let r=0;r<9;r++)for(let c=0;c<9;c++)flat.push(ML[r][c]);
   flat.forEach(idx=>{
     const cell=document.createElement('div');cell.className='m-cell';
     if(idx===MC)cell.classList.add('center-main');
     else if(SC.includes(idx))cell.classList.add('sub-center');
-    cell.textContent=D.mandala[idx]||(idx===MC?'Core Goal':'');
+    cell.textContent=D.mandala[idx]||(idx===MC?'핵심 목표':'');
     cell.contentEditable=true;
     cell.addEventListener('blur',e=>{D.mandala[idx]=e.target.textContent.trim();autoSave()});
     grid.appendChild(cell);
@@ -697,8 +697,8 @@ function buildMandala(){
 }
 
 /* SCHEDULE */
-function changeMonth(d){D.viewMonth.month+=d;if(D.viewMonth.month>11){D.viewMonth.month=0;D.viewMonth.year++}if(D.viewMonth.month<0){D.viewMonth.month=11;D.viewMonth.year--}renderSchedule()}
-function renderSchedule(){
+function changeMonth(d){D.viewMonth.month+=d;if(D.viewMonth.month>11){D.viewMonth.month=0;D.viewMonth.year++}if(D.viewMonth.month<0){D.viewMonth.month=11;D.viewMonth.year--}render일정()}
+function render일정(){
   const {year,month}=D.viewMonth;
   document.getElementById('month-label').textContent=new Date(year,month,1).toLocaleDateString('ko-KR',{year:'numeric',month:'long'});
   const cal=document.getElementById('cal-mini');cal.innerHTML='';
@@ -772,9 +772,9 @@ function initFinSel(){
     if(val===D.curMonth)opt.selected=true;
     sel.appendChild(opt);
   }
-  renderFinance();
+  render가계부();
 }
-function addFinance(){
+function add가계부(){
   const desc=document.getElementById('fin-desc').value.trim();
   const amount=parseInt(document.getElementById('fin-amount').value);
   const type=document.getElementById('fin-type').value;
@@ -783,9 +783,9 @@ function addFinance(){
   if(!desc||!amount)return;
   D.finance.push({id:Date.now(),desc,amount,type,month,catId});
   document.getElementById('fin-desc').value='';document.getElementById('fin-amount').value='';
-  autoSave();renderFinance();updateNetWorth();
+  autoSave();render가계부();updateNetWorth();
 }
-function renderFinance(){
+function render가계부(){
   const sel=document.getElementById('fin-month-sel');if(!sel)return;
   const month=sel.value;D.curMonth=month;
   const rows=(D.finance||[]).filter(f=>f.month===month);
@@ -810,7 +810,7 @@ function renderFinance(){
     const val=document.createElement('div');val.className='txn-amt '+(r.type==='income'?'inc':'exp');
     val.textContent=(r.type==='income'?'+':'-')+'₩'+r.amount.toLocaleString();
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
-    del.onclick=()=>{const idx=D.finance.findIndex(f=>f.id===r.id);if(idx>-1){D.finance.splice(idx,1);autoSave();renderFinance();updateNetWorth()}};
+    del.onclick=()=>{const idx=D.finance.findIndex(f=>f.id===r.id);if(idx>-1){D.finance.splice(idx,1);autoSave();render가계부();updateNetWorth()}};
     row.append(dot,info,val,del);list.appendChild(row);
   });
   updateNetWorth();
@@ -855,7 +855,7 @@ function renderSavings(){
     if(bot.children.length)card.appendChild(bot);
     const er=document.createElement('div');er.style.cssText='display:flex;gap:8px;margin-top:10px;align-items:center';
     const inp=document.createElement('input');inp.className='field';inp.style.flex='1';inp.type='number';inp.inputMode='numeric';inp.placeholder='현재 금액 업데이트';
-    const upd=document.createElement('button');upd.className='btn btn-primary btn-sm';upd.textContent='Update';
+    const upd=document.createElement('button');upd.className='btn btn-primary btn-sm';upd.textContent='업데이트';
     upd.onclick=()=>{const v=parseInt(inp.value);if(!isNaN(v)){D.savings[i].current=v;autoSave();renderSavings();updateNetWorth()}};
     er.append(inp,upd);card.appendChild(er);
     list.appendChild(card);
@@ -933,9 +933,9 @@ function addNote(){
   const txt=document.getElementById('note-input').value.trim();if(!txt)return;
   if(!D.notes)D.notes=[];
   D.notes.unshift({id:Date.now(),text:txt,date:new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'}),resolved:false});
-  document.getElementById('note-input').value='';autoSave();renderNotes();
+  document.getElementById('note-input').value='';autoSave();render잡념();
 }
-function renderNotes(){
+function render잡념(){
   const list=document.getElementById('notes-list');list.innerHTML='';
   if(!D.notes||!D.notes.length){list.innerHTML='<div class="empty">기록된 잡념이 없습니다</div>';return}
   D.notes.forEach((n,i)=>{
@@ -948,24 +948,24 @@ function renderNotes(){
     const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px;align-items:center;flex-wrap:wrap';
     const tog=document.createElement('button');tog.className=n.resolved?'btn btn-ghost btn-sm':'btn btn-primary btn-sm';
     tog.textContent=n.resolved?'다시 열기':'해결 완료';
-    tog.onclick=()=>{D.notes[i].resolved=!n.resolved;autoSave();renderNotes()};
+    tog.onclick=()=>{D.notes[i].resolved=!n.resolved;autoSave();render잡념()};
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
-    del.onclick=()=>{D.notes.splice(i,1);autoSave();renderNotes()};
+    del.onclick=()=>{D.notes.splice(i,1);autoSave();render잡념()};
     actions.append(tog,del);card.append(meta,body,actions);list.appendChild(card);
   });
 }
 
 /* DIARY */
-const QS=['지금 이 순간 가장 솔직한 당신의 감정은?','오늘 당신이 가장 감사한 것은 무엇인가요?','10년 뒤의 나에게 편지를 쓴다면?','당신의 삶에서 가장 중요한 가치는?','오늘 실패에서 배운 것은?','지금 당장 그만두고 싶은 것은?','당신이 진정으로 원하는 삶은?','오늘 하루를 색으로 표현하면?','행복을 방해하는 가장 큰 요소는?','절대 타협할 수 없는 한 가지는?','누군가에게 전하지 못한 말은?','가장 의미 있는 루틴과 없는 루틴은?','이상적인 나와 지금의 나의 차이는?','오늘 가장 살아있음을 느낀 순간은?','지금 가장 두려운 것은?','What brings you genuine joy?','If today were your last, what would matter?','What belief are you ready to release?','Where are you playing it too safe?','What would you do if failure were impossible?','What does success mean to you — really?','Who do you want to become in 5 years?','What are you avoiding and why?','What truth are you afraid to speak?','Where are you pretending to be okay?','What do you need more of in your life?','What do you need less of?','What would your future self thank you for?','What small habit could change everything?','Where is your energy being wasted?','What makes you feel most alive?','What are you most proud of this week?','What conversation have you been putting off?','What would you do differently if you started over?','What does your ideal day look like?','What is your relationship with money?','What does rest mean to you?','What are you still holding onto?','Who inspires you and why?','What does love mean to you?','What do you owe yourself an apology for?','What are you learning about yourself lately?','What would you tell your 16-year-old self?','What legacy do you want to leave?','What boundaries do you need to set?','Where are you not being honest with yourself?','What does courage look like for you today?','How are you taking care of your body?','How are you taking care of your mind?','What does your inner critic say most often?','When do you feel most confident?','What drains you the most?','What fills you up the most?','What do you want your life to stand for?','What are you grateful for that you often overlook?','What does your best version of yourself look like?','Where are you self-sabotaging?','What do you need to forgive yourself for?','What do you need to forgive someone else for?','What do you want more adventure in?','What parts of yourself do you hide?','What gives your life meaning?','What would you do if no one was watching?','What is the hardest decision you are facing?','What do you need to hear right now?','What do you keep putting off?','Where in your life do you feel stuck?','What would love do in your current situation?','What scares you about the future?','What excites you about the future?','What do you wish you had started sooner?','What brings you peace?','What disrupts your peace?','What would simplifying your life look like?','오늘 나에게 필요한 한 가지 말은?','내가 가장 행복했던 기억은?','지금 나에게 가장 부족한 것은?','나를 가장 오래 붙잡고 있는 걱정은?','내가 진짜 원하는 직업은 무엇인가?','나에게 성공이란 무엇인가?','나는 왜 지금 이 일을 하고 있는가?','내 삶에서 가장 바꾸고 싶은 것은?','What habit are you most proud of building?','What do you wish you were better at?','What are you actually really good at?','When were you last truly present?','What memory makes you smile instantly?','What would you regret not trying?','Where do you need to be more vulnerable?','What does your body need today?','What does your soul need today?','What does your mind need today?','What assumption are you ready to challenge?','What new belief would change your life?','What old belief is holding you back?','If money were no object, how would you spend your time?','What would you do with an extra hour every day?','Who in your life truly sees you?','Where are you giving more than you receive?','When do you feel most yourself?','When do you feel least yourself?','What do you want to learn next?','What skill would change your life if you mastered it?','What is your relationship with silence?','What is your relationship with failure?','What is your relationship with success?','What does growth feel like?','What are you pretending not to know?','What would radical honesty change in your life?','What would radical discipline change in your life?','How do you want to feel at the end of this year?','What is the one thing that would make everything else easier?','What are you doing just out of habit?','What are you doing out of fear?','What are you doing out of love?','What does your ideal morning look like?','What does your ideal week look like?','What has your greatest pain taught you?','What has your greatest joy taught you?','What would you do if you knew you were enough?','What makes you uniquely you?','What conversation would change your life?','오늘 내가 가장 잘한 일은?','오늘 내가 가장 못한 일은?','내가 진심으로 즐기는 일은 무엇인가?','나를 성장시키는 관계는 무엇인가?','나를 소모시키는 관계는 무엇인가?','지금 나에게 가장 필요한 용기는?','내 삶에서 우선순위가 뒤바뀐 것은?','나는 지금 어디를 향해 가고 있는가?','내가 포기하고 싶을 때 나를 붙잡는 것은?','What does it mean to live fully?','What does it mean to love fully?','What does it mean to work meaningfully?','What does it mean to be truly free?','What story do you want your life to tell?','What chapter of your life are you in now?','What would you have to believe to pursue your biggest dream?','What is the life only you can live?'];
+const QS=['지금 이 순간 가장 솔직한 당신의 감정은?','오늘 당신이 가장 감사한 것은 무엇인가요?','10년 뒤의 나에게 편지를 쓴다면?','당신의 삶에서 가장 중요한 가치는?','오늘 실패에서 배운 것은?','지금 당장 그만두고 싶은 것은?','당신이 진정으로 원하는 삶은?','오늘 하루를 색으로 표현하면?','행복을 방해하는 가장 큰 요소는?','절대 타협할 수 없는 한 가지는?','누군가에게 전하지 못한 말은?','가장 의미 있는 루틴과 없는 루틴은?','이상적인 나와 지금의 나의 차이는?','오늘 가장 살아있음을 느낀 순간은?','지금 가장 두려운 것은?','진정한 기쁨을 주는 것은 무엇인가요?','오늘이 마지막 날이라면 무엇이 중요할까요?','내려놓을 준비가 된 믿음은 무엇인가요?','어디서 너무 안전하게만 살고 있나요?','실패가 불가능하다면 무엇을 할 건가요?','당신에게 성공이란 정말 무엇인가요?','5년 후 어떤 사람이 되고 싶나요?','무엇을 피하고 있고 그 이유는?','말하기 두려운 진실은 무엇인가요?','괜찮은 척하고 있는 부분은 어디인가요?','삶에서 더 필요한 것은 무엇인가요?','삶에서 덜 필요한 것은 무엇인가요?','미래의 내가 감사할 일은 무엇인가요?','모든 것을 바꿀 수 있는 작은 습관은?','어디서 에너지가 낭비되고 있나요?','가장 살아있다고 느끼는 순간은?','이번 주 가장 자랑스러운 것은?','미뤄온 대화가 있다면 무엇인가요?','다시 시작한다면 무엇을 다르게 할까요?','이상적인 하루는 어떤 모습인가요?','돈과 나의 관계는 어떤가요?','나에게 휴식이란 무엇인가요?','아직 놓지 못하고 있는 것은?','나에게 영감을 주는 사람과 이유는?','나에게 사랑이란 무엇인가요?','나 자신에게 사과해야 할 것은?','요즘 나 자신에 대해 배우는 것은?','16살의 나에게 하고 싶은 말은?','남기고 싶은 유산은 무엇인가요?','설정해야 할 경계는 무엇인가요?','나 자신에게 솔직하지 못한 부분은?','오늘 나에게 용기란 어떤 모습인가요?','몸을 어떻게 돌보고 있나요?','마음을 어떻게 돌보고 있나요?','내면의 비평가는 주로 뭐라고 하나요?','가장 자신감 있을 때는 언제인가요?','가장 소진되게 만드는 것은?','가장 충전되게 만드는 것은?','내 삶이 무엇을 위해 존재하길 원하나요?','자주 간과하는 감사한 것들은?','나의 최고 버전은 어떤 모습인가요?','어디서 자기 방해를 하고 있나요?','나 자신을 용서해야 할 것은?','다른 사람을 용서해야 할 것은?','더 많은 모험을 원하는 분야는?','숨기고 있는 나의 모습은?','삶의 의미를 주는 것은 무엇인가요?','아무도 보지 않는다면 무엇을 할까요?','지금 직면한 가장 어려운 결정은?','지금 내가 듣고 싶은 말은?','계속 미루고 있는 것은 무엇인가요?','삶에서 막혀있는 곳은 어디인가요?','지금 상황에서 사랑은 무엇을 할까요?','미래에 대해 두려운 것은?','미래에 대해 설레는 것은?','더 일찍 시작했으면 했던 것은?','평화를 주는 것은 무엇인가요?','평화를 방해하는 것은 무엇인가요?','삶을 단순화한다면 어떤 모습일까요?','오늘 나에게 필요한 한 가지 말은?','내가 가장 행복했던 기억은?','지금 나에게 가장 부족한 것은?','나를 가장 오래 붙잡고 있는 걱정은?','내가 진짜 원하는 직업은 무엇인가?','나에게 성공이란 무엇인가?','나는 왜 지금 이 일을 하고 있는가?','내 삶에서 가장 바꾸고 싶은 것은?','가장 자랑스럽게 쌓은 습관은?','더 잘하고 싶은 것은 무엇인가요?','실제로 정말 잘하는 것은 무엇인가요?','마지막으로 완전히 현재에 있었던 때는?','생각만 해도 웃음이 나는 기억은?','시도하지 않으면 후회할 것은?','더 취약해져야 할 곳은 어디인가요?','오늘 몸에 필요한 것은?','오늘 영혼에 필요한 것은?','오늘 마음에 필요한 것은?','도전할 준비가 된 가정은 무엇인가요?','삶을 바꿀 새로운 믿음은 무엇인가요?','나를 붙잡고 있는 오래된 믿음은?','돈이 문제가 없다면 어떻게 시간을 쓸까요?','하루에 한 시간이 더 생긴다면?','나를 진정으로 보는 사람은 누구인가요?','주는 것이 받는 것보다 많은 곳은?','가장 나답게 느껴지는 순간은?','가장 나답지 않게 느껴지는 순간은?','다음에 배우고 싶은 것은?','마스터하면 삶이 바뀔 기술은?','침묵과 나의 관계는 어떤가요?','실패와 나의 관계는 어떤가요?','성공과 나의 관계는 어떤가요?','성장은 어떤 느낌인가요?','모른 척하고 있는 것은 무엇인가요?','완전한 솔직함이 내 삶을 어떻게 바꿀까요?','완전한 규율이 내 삶을 어떻게 바꿀까요?','올해 말에 어떤 기분을 느끼고 싶나요?','그렇게 느끼려면 무엇이 필요한가요?','모든 것을 더 쉽게 만드는 한 가지는?','단순히 습관으로 하는 것은 무엇인가요?','두려움에서 하는 것은 무엇인가요?','사랑에서 하는 것은 무엇인가요?','이상적인 아침은 어떤 모습인가요?','이상적인 한 주는 어떤 모습인가요?','가장 큰 고통이 가르쳐준 것은?','가장 큰 기쁨이 가르쳐준 것은?','내가 충분하다는 것을 안다면?','나를 독특하게 만드는 것은 무엇인가요?','삶을 바꿀 대화는 어떤 것일까요?','오늘 내가 가장 잘한 일은?','오늘 내가 가장 못한 일은?','내가 진심으로 즐기는 일은 무엇인가?','나를 성장시키는 관계는 무엇인가?','나를 소모시키는 관계는 무엇인가?','지금 나에게 가장 필요한 용기는?','내 삶에서 우선순위가 뒤바뀐 것은?','나는 지금 어디를 향해 가고 있는가?','내가 포기하고 싶을 때 나를 붙잡는 것은?','완전히 산다는 것은 무엇인가요?','완전히 사랑한다는 것은 무엇인가요?','의미 있게 일한다는 것은 무엇인가요?','진정으로 자유롭다는 것은 무엇인가요?','내 삶이 어떤 이야기를 전하길 원하나요?','지금 내 삶의 어떤 챕터에 있나요?','가장 큰 꿈을 추구하려면 무엇을 믿어야 하나요?','오직 나만 살 수 있는 삶은 무엇인가요?'];
 let curQ=QS[Math.floor(Math.random()*QS.length)];
 function newQuestion(){curQ=QS[Math.floor(Math.random()*QS.length)];document.getElementById('diary-question').textContent=curQ}
-function saveDiary(){
+function save일기(){
   const text=document.getElementById('diary-area').value.trim();if(!text)return;
   if(!D.diary)D.diary=[];
   D.diary.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),question:curQ,text});
-  document.getElementById('diary-area').value='';autoSave();renderDiary();newQuestion();
+  document.getElementById('diary-area').value='';autoSave();render일기();newQuestion();
 }
-function renderDiary(){
+function render일기(){
   document.getElementById('diary-question').textContent=curQ;
   const c=document.getElementById('diary-entries');c.innerHTML='';
   if(!D.diary||!D.diary.length)return;
@@ -980,7 +980,7 @@ function renderDiary(){
 }
 
 /* JOBS */
-const SL={apply:'Planning',doc:'Applied',interview:'Interview',result:'Awaiting'};
+const SL={apply:'지원 예정',doc:'서류 제출',interview:'면접',result:'결과 대기'};
 function addJob(){
   const company=document.getElementById('j-company').value.trim(),title=document.getElementById('j-title').value.trim();
   if(!company||!title)return;
