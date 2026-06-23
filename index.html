@@ -43,7 +43,7 @@ body{font-family:var(--sans);color:var(--ink);display:flex;flex-direction:column
 .main-wrap{flex:1;overflow:hidden;position:relative}
 .tab{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .tab.active{display:block}
-@media(min-width:768px){.main-wrap{overflow-y:auto;height:auto;flex:1}.tab{height:auto}.tab.active{display:block;min-height:50vh}}
+@media(min-width:600px){html,body{overflow:auto;height:auto}.main-wrap{flex:none;overflow:visible;height:auto}.tab{display:none;height:auto;min-height:0;overflow-y:visible}.tab.active{display:block}}
 .tile{padding:20px 18px 80px}
 .tile-parchment{background:var(--parchment)}
 
@@ -880,9 +880,10 @@ initAll();
 (function(){
   const cv=document.getElementById('logo-canvas');
   if(!cv)return;
-  const ctx=cv.getContext('2d');
   const W=280,H=160;
   cv.width=W;cv.height=H;
+  cv.style.display='block';
+  const ctx=cv.getContext('2d');
   let t=0;
   function draw(t){
     ctx.clearRect(0,0,W,H);
@@ -946,7 +947,7 @@ initAll();
     ctx.restore();
   }
   function loop(){t+=0.018;draw(t);requestAnimationFrame(loop);}
-  loop();
+  setTimeout(loop, 100);
 })();
 </script>
 </body>
