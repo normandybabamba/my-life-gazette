@@ -305,7 +305,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 <body>
 
 <nav class="global-nav">
-  <span class="nav-logo">Life Gazette</span>
+  <span class="nav-logo">Life Gazette<span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:400;margin-left:6px;letter-spacing:0">v1.4</span></span>
   <div class="nav-right">
     <span class="sync-status" id="sync-status">로그인 필요</span>
     <button class="nav-btn-sm" id="btn-save" onclick="saveToGDrive()" style="display:none">저장</button>
@@ -376,10 +376,10 @@ textarea.field:focus{border-color:var(--blue);outline:none}
       <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('today_tasks','today')">추가</button>
       <div id="today_tasks-list" style="margin-top:8px"></div>
     </div>
-    <div class="card card-sm">
-      <div class="sec-title-sm mb12">메모</div>
-      <textarea class="field" id="memo-area" placeholder="메모..." style="min-height:90px" onblur="D.memo=this.value;autoSave()"></textarea>
-    </div>
+  </div>
+  <div class="card mb16">
+    <div class="sec-title-sm mb12">메모</div>
+    <textarea class="field" id="memo-area" placeholder="메모..." style="min-height:200px;width:100%" onblur="D.memo=this.value;autoSave()"></textarea>
   </div>
 </div>
 
@@ -1062,7 +1062,10 @@ function renderStaging(){
     const dot=document.createElement('div');dot.className='txn-dot '+getCat(item.catId).color;
     const info=document.createElement('div');info.className='txn-info';
     const desc=document.createElement('div');desc.className='txn-desc';desc.textContent=item.desc;
-    const dateEl=document.createElement('div');dateEl.className='txn-cat';dateEl.textContent=item.date;
+    const dateEl=document.createElement('div');dateEl.className='txn-cat';
+    const dObj=new Date(item.date);
+    const wd=['일','월','화','수','목','금','토'][dObj.getDay()];
+    dateEl.textContent=`${item.date} (${wd}) · 구매일`;
     info.append(desc,dateEl);
     const amt=document.createElement('div');amt.className='txn-amt exp';amt.textContent='-₩'+item.amount.toLocaleString();
     const catSel=document.createElement('select');
@@ -1127,7 +1130,8 @@ function render가계부(){
     const dot=document.createElement('div');dot.className='txn-dot '+cat.color;
     const info=document.createElement('div');info.className='txn-info';
     const desc=document.createElement('div');desc.className='txn-desc';desc.textContent=r.desc;
-    const catl=document.createElement('div');catl.className='txn-cat';catl.textContent=cat.name;
+    const catl=document.createElement('div');catl.className='txn-cat';
+    catl.textContent=cat.name+(r.date?' · '+r.date:'');
     info.append(desc,catl);
     const val=document.createElement('div');val.className='txn-amt '+(r.type==='income'?'inc':'exp');
     val.textContent=(r.type==='income'?'+':'-')+'₩'+r.amount.toLocaleString();
