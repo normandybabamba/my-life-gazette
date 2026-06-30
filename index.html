@@ -305,7 +305,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 <body>
 
 <nav class="global-nav">
-  <span class="nav-logo">Life Gazette<span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:400;margin-left:6px;letter-spacing:0">v1.4</span></span>
+  <span class="nav-logo">Life Gazette<span style="font-size:9px;color:rgba(255,255,255,0.4);font-weight:400;margin-left:6px;letter-spacing:0">v1.6</span></span>
   <div class="nav-right">
     <span class="sync-status" id="sync-status">로그인 필요</span>
     <button class="nav-btn-sm" id="btn-save" onclick="saveToGDrive()" style="display:none">저장</button>
@@ -370,12 +370,14 @@ textarea.field:focus{border-color:var(--blue);outline:none}
       <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('monthly')">추가</button>
       <div id="monthly-list" style="margin-top:8px"></div>
     </div>
-    <div class="card card-sm">
-      <div class="sec-title-sm mb12">오늘 할 일</div>
-      <input class="field" id="today-in" placeholder="추가 task..." onkeydown="if(event.key==='Enter')addItem('today_tasks','today')">
-      <button class="btn btn-primary btn-sm btn-full" style="margin-top:8px" onclick="addItem('today_tasks','today')">추가</button>
-      <div id="today_tasks-list" style="margin-top:8px"></div>
+  </div>
+  <div class="card mb16">
+    <div class="sec-title-sm mb12">오늘 할 일</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input class="field" id="today-in" placeholder="추가 task..." style="flex:1" onkeydown="if(event.key==='Enter')addItem('today_tasks','today')">
+      <button class="btn btn-primary btn-sm" onclick="addItem('today_tasks','today')">추가</button>
     </div>
+    <div id="today_tasks-list"></div>
   </div>
   <div class="card mb16">
     <div class="sec-title-sm mb12">메모</div>
@@ -536,17 +538,21 @@ textarea.field:focus{border-color:var(--blue);outline:none}
 
 <!-- JOB -->
 <div class="tab" id="tab-job">
-  <div class="display-md mb12">취준</div>
-  <div class="caption" style="margin-bottom:18px">지원 현황과 체크리스트를 관리하세요.</div>
-  <div class="card mb16">
+  <div class="sec-hdr">
+    <div>
+      <div class="display-md" style="margin-bottom:0">취준</div>
+      <div class="caption">지원 현황과 자소서를 관리하세요.</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="toggle-rejected-btn" onclick="toggleRejectedView()">탈락 목록 보기</button>
+  </div>
+  <div class="card mb16" id="job-add-form-wrap">
     <div class="sec-title-sm mb12">새 채용 등록</div>
     <div class="form-group"><label class="label">회사명</label><input class="field" id="j-company" placeholder="회사명"></div>
     <div class="form-group"><label class="label">직무/포지션</label><input class="field" id="j-title" placeholder="직무/포지션"></div>
     <div class="form-row mb12">
       <div><label class="label">마감일</label><input class="field" id="j-deadline" type="date"></div>
-      <div><label class="label">상태</label><select class="select-field" id="j-status"><option value="apply">지원 예정</option><option value="doc">서류 제출</option><option value="interview">면접</option><option value="result">결과 대기</option></select></div>
+      <div><label class="label">상태</label><select class="select-field" id="j-status"><option value="apply">지원 예정</option><option value="doc">서류 제출</option><option value="interview">면접</option><option value="result">결과 대기</option><option value="fail">탈락</option></select></div>
     </div>
-    <div class="form-group"><label class="label">자소서 항목</label><input class="field" id="j-essay" placeholder="예: 지원동기, 장단점..."></div>
     <button class="btn btn-primary btn-full" onclick="addJob()">등록</button>
   </div>
   <div id="job-list"></div>
@@ -690,7 +696,7 @@ function autoSave(){clearTimeout(autoSaveTimer);autoSaveTimer=setTimeout(()=>{if
 
 function initAll(){
   if(!D.categories||!D.categories.length)D.categories=[...DEFAULT_CATS];
-  build만다라트();initFinSel();render일정();populateCatSelects();
+  build만다라트();initFinSel();render일정();populateCatSelects();renderStaging();
 }
 
 function showTab(name){
@@ -700,7 +706,7 @@ function showTab(name){
   const tabs=['mandala','schedule','finance','notes','diary','job'];
   document.querySelectorAll('.sub-tab')[tabs.indexOf(name)].classList.add('active');
   if(name==='schedule')render일정();
-  if(name==='finance'){render가계부();renderSavings();renderFixed();renderCats();}
+  if(name==='finance'){render가계부();renderSavings();renderFixed();renderCats();renderStaging();}
   if(name==='notes')render잡념();
   if(name==='diary')render일기();
   if(name==='job')renderJobs();
@@ -973,7 +979,8 @@ function getExistingHashes(){
   return set;
 }
 
-let stagingItems=[];
+// stagingItems는 D.stagingItems로 저장되어 동기화됨
+function getStaging(){if(!D.stagingItems)D.stagingItems=[];return D.stagingItems;}
 
 function handleBankFile(ev){
   const file=ev.target.files[0];if(!file)return;
@@ -1002,7 +1009,7 @@ function handleBankFile(ev){
       });
       const existingHashes=getExistingHashes();
       let excluded=0,duplicate=0;
-      stagingItems=[];
+      D.stagingItems=[];
       for(let i=headerRow+1;i<rows.length;i++){
         const row=rows[i];if(!row||!row[colIdx.dt])continue;
         const dtStr=String(row[colIdx.dt]).trim();
@@ -1021,7 +1028,7 @@ function handleBankFile(ev){
         if(existingHashes.has(hash)){duplicate++;continue;}
         existingHashes.add(hash);
         const catId=bankMapCategory(content,txnType)||'unclassified';
-        stagingItems.push({
+        getStaging().push({
           _hash:hash,
           desc:content,
           amount,
@@ -1036,7 +1043,8 @@ function handleBankFile(ev){
         populateCatSelects();
       }
       renderStaging();
-      statusEl.innerHTML=`<div class="caption" style="color:var(--blue)">검토 대기 ${stagingItems.length}건 생성됨 (자동제외 ${excluded}건, 중복차단 ${duplicate}건)</div>`;
+      autoSave();
+      statusEl.innerHTML=`<div class="caption" style="color:var(--blue)">검토 대기 ${getStaging().length}건 생성됨 (자동제외 ${excluded}건, 중복차단 ${duplicate}건)</div>`;
     }catch(err){
       statusEl.innerHTML='<div class="caption" style="color:var(--red)">파일을 읽는 중 오류가 발생했습니다</div>';
       console.error(err);
@@ -1050,11 +1058,12 @@ function renderStaging(){
   const area=document.getElementById('staging-area');
   const list=document.getElementById('staging-list');
   const countEl=document.getElementById('staging-count');
-  if(!stagingItems.length){area.style.display='none';return}
+  const items=getStaging();
+  if(!items.length){area.style.display='none';return}
   area.style.display='block';
-  countEl.textContent=stagingItems.length+'건';
+  countEl.textContent=items.length+'건';
   list.innerHTML='';
-  stagingItems.forEach((item,i)=>{
+  items.forEach((item,i)=>{
     const row=document.createElement('div');
     row.className='txn-row';
     row.style.flexWrap='wrap';
@@ -1071,18 +1080,19 @@ function renderStaging(){
     const catSel=document.createElement('select');
     catSel.style.cssText='border:1px solid var(--hairline);background:var(--white);border-radius:8px;padding:5px 8px;font-size:13px;outline:none';
     D.categories.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;if(c.id===item.catId)o.selected=true;catSel.appendChild(o)});
-    catSel.onchange=()=>{stagingItems[i].catId=catSel.value;dot.className='txn-dot '+getCat(catSel.value).color;};
+    catSel.onchange=()=>{items[i].catId=catSel.value;dot.className='txn-dot '+getCat(catSel.value).color;autoSave();};
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
-    del.onclick=()=>{stagingItems.splice(i,1);renderStaging();};
+    del.onclick=()=>{items.splice(i,1);autoSave();renderStaging();};
     row.append(dot,info,amt,catSel,del);
     list.appendChild(row);
   });
 }
 
 function applyAllStaging(){
-  if(!stagingItems.length)return;
+  const items=getStaging();
+  if(!items.length)return;
   if(!D.importedHashes)D.importedHashes=[];
-  stagingItems.forEach(item=>{
+  items.forEach(item=>{
     D.finance.push({
       id:Date.now()+Math.random(),
       desc:item.desc,amount:item.amount,type:item.type,
@@ -1090,8 +1100,8 @@ function applyAllStaging(){
     });
     D.importedHashes.push(item._hash);
   });
-  const applied=stagingItems.length;
-  stagingItems=[];
+  const applied=items.length;
+  D.stagingItems=[];
   autoSave();
   render가계부();
   updateNetWorth();
@@ -1126,7 +1136,9 @@ function render가계부(){
   if(!rows.length){list.innerHTML='<div class="empty">이번 달 내역이 없습니다</div>';return}
   rows.slice().reverse().forEach(r=>{
     const cat=getCat(r.catId);
-    const row=document.createElement('div');row.className='txn-row';
+    const wrap=document.createElement('div');
+    wrap.style.marginBottom='8px';
+    const row=document.createElement('div');row.className='txn-row';row.style.marginBottom='0';row.style.cursor='pointer';
     const dot=document.createElement('div');dot.className='txn-dot '+cat.color;
     const info=document.createElement('div');info.className='txn-info';
     const desc=document.createElement('div');desc.className='txn-desc';desc.textContent=r.desc;
@@ -1136,8 +1148,38 @@ function render가계부(){
     const val=document.createElement('div');val.className='txn-amt '+(r.type==='income'?'inc':'exp');
     val.textContent=(r.type==='income'?'+':'-')+'₩'+r.amount.toLocaleString();
     const del=document.createElement('button');del.className='del-btn';del.textContent='×';
-    del.onclick=()=>{const idx=D.finance.findIndex(f=>f.id===r.id);if(idx>-1){D.finance.splice(idx,1);autoSave();render가계부();updateNetWorth()}};
-    row.append(dot,info,val,del);list.appendChild(row);
+    del.onclick=(ev)=>{ev.stopPropagation();const idx=D.finance.findIndex(f=>f.id===r.id);if(idx>-1){D.finance.splice(idx,1);autoSave();render가계부();updateNetWorth()}};
+    row.append(dot,info,val,del);
+
+    const editBox=document.createElement('div');
+    editBox.className='card card-sm';
+    editBox.style.cssText='display:none;margin-top:6px;border-color:var(--blue)';
+    const descIn=document.createElement('input');descIn.className='field';descIn.value=r.desc;descIn.style.marginBottom='10px';
+    const amtRow=document.createElement('div');amtRow.style.cssText='display:flex;gap:8px;margin-bottom:10px';
+    const amtIn=document.createElement('input');amtIn.className='field';amtIn.type='number';amtIn.inputMode='numeric';amtIn.value=r.amount;amtIn.style.flex='1';
+    const typeSel=document.createElement('select');typeSel.className='select-field';typeSel.style.width='auto';
+    typeSel.innerHTML='<option value="income">수입</option><option value="expense">지출</option>';
+    typeSel.value=r.type;
+    amtRow.append(amtIn,typeSel);
+    const catSel=document.createElement('select');catSel.className='select-field';catSel.style.marginBottom='10px';
+    D.categories.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;if(c.id===r.catId)o.selected=true;catSel.appendChild(o)});
+    const dateIn=document.createElement('input');dateIn.className='field';dateIn.type='date';dateIn.value=r.date||'';dateIn.style.marginBottom='10px';
+    const saveBtn=document.createElement('button');saveBtn.className='btn btn-primary btn-full';saveBtn.textContent='저장';
+    saveBtn.onclick=()=>{
+      const idx=D.finance.findIndex(f=>f.id===r.id);
+      if(idx>-1){
+        D.finance[idx].desc=descIn.value.trim()||r.desc;
+        D.finance[idx].amount=parseInt(amtIn.value)||r.amount;
+        D.finance[idx].type=typeSel.value;
+        D.finance[idx].catId=catSel.value;
+        D.finance[idx].date=dateIn.value||r.date;
+        autoSave();render가계부();updateNetWorth();
+      }
+    };
+    editBox.append(descIn,amtRow,catSel,dateIn,saveBtn);
+    row.onclick=()=>{editBox.style.display=editBox.style.display==='none'?'block':'none';};
+    wrap.append(row,editBox);
+    list.appendChild(wrap);
   });
   updateNetWorth();
 }
@@ -1316,13 +1358,27 @@ function render일기(){
 }
 
 /* JOBS */
-const SL={apply:'지원 예정',doc:'서류 제출',interview:'면접',result:'결과 대기'};
+const SL={apply:'지원 예정',doc:'서류 제출',interview:'면접',result:'결과 대기',fail:'탈락'};
+let showingRejected=false;
+function toggleRejectedView(){
+  showingRejected=!showingRejected;
+  const btn=document.getElementById('toggle-rejected-btn');
+  const formWrap=document.getElementById('job-add-form-wrap');
+  if(showingRejected){
+    btn.textContent='지원 목록 보기';
+    formWrap.style.display='none';
+  }else{
+    btn.textContent='탈락 목록 보기';
+    formWrap.style.display='block';
+  }
+  renderJobs();
+}
 function addJob(){
   const company=document.getElementById('j-company').value.trim(),title=document.getElementById('j-title').value.trim();
   if(!company||!title)return;
   if(!D.jobs)D.jobs=[];
-  D.jobs.unshift({id:Date.now(),company,title,deadline:document.getElementById('j-deadline').value,status:document.getElementById('j-status').value,essay:document.getElementById('j-essay').value.trim(),items:[]});
-  ['j-company','j-title','j-deadline','j-essay'].forEach(id=>document.getElementById(id).value='');
+  D.jobs.unshift({id:Date.now(),company,title,deadline:document.getElementById('j-deadline').value,status:document.getElementById('j-status').value,items:[],essays:[]});
+  ['j-company','j-title','j-deadline'].forEach(id=>document.getElementById(id).value='');
   autoSave();renderJobs();
 }
 function addJobItem(jobId){
@@ -1332,11 +1388,24 @@ function addJobItem(jobId){
   job.items.push({text:inp.value.trim(),done:false});
   inp.value='';autoSave();renderJobs();
 }
+function addEssayEntry(jobId){
+  const job=D.jobs.find(j=>j.id===jobId);if(!job)return;
+  if(!job.essays)job.essays=[];
+  job.essays.push({id:Date.now(),question:'',answer:''});
+  autoSave();renderJobs();
+}
 function renderJobs(){
   const list=document.getElementById('job-list');list.innerHTML='';
-  if(!D.jobs||!D.jobs.length){list.innerHTML='<div class="empty">등록된 채용 일정이 없습니다</div>';return}
-  D.jobs.forEach((job,ji)=>{
+  const allJobs=D.jobs||[];
+  const filtered=allJobs.filter(j=>showingRejected?j.status==='fail':j.status!=='fail');
+  if(!filtered.length){
+    list.innerHTML=`<div class="empty">${showingRejected?'탈락한 지원 내역이 없습니다':'등록된 채용 일정이 없습니다'}</div>`;
+    return;
+  }
+  filtered.forEach((job)=>{
+    const ji=D.jobs.indexOf(job);
     const card=document.createElement('div');card.className='job-card';
+    if(job.status==='fail')card.style.opacity='0.75';
     const top=document.createElement('div');top.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px';
     const info=document.createElement('div');info.style.flex='1';
     const t=document.createElement('div');t.style.cssText='font-size:16px;font-weight:600;letter-spacing:-0.2px;outline:none';
@@ -1348,9 +1417,9 @@ function renderJobs(){
     info.append(t,r);
     const sel=document.createElement('select');sel.style.cssText='border:1px solid var(--hairline);background:var(--parchment);border-radius:8px;padding:5px 8px;font-size:13px;color:var(--ink);outline:none;cursor:pointer;flex-shrink:0';
     Object.entries(SL).forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if(v===job.status)o.selected=true;sel.appendChild(o)});
-    sel.onchange=()=>{D.jobs[ji].status=sel.value;autoSave()};
+    sel.onchange=()=>{D.jobs[ji].status=sel.value;autoSave();renderJobs();};
     const dj=document.createElement('button');dj.className='del-btn';dj.textContent='×';
-    dj.onclick=()=>{if(confirm('이 채용 항목을 삭제할까요?')){D.jobs.splice(ji,1);autoSave();renderJobs();}};
+    dj.onclick=()=>{if(confirm('이 채용 항목을 완전히 삭제할까요? (탈락 처리는 상태를 "탈락"으로 바꾸세요)')){D.jobs.splice(ji,1);autoSave();renderJobs();}};
     const rightCol=document.createElement('div');rightCol.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0';
     rightCol.append(sel,dj);
     top.append(info,rightCol);card.appendChild(top);
@@ -1362,16 +1431,12 @@ function renderJobs(){
     dlInput.style.cssText='border:none;background:transparent;font-size:13px;color:var(--ink48);font-family:var(--sans)';
     dlInput.onchange=()=>{D.jobs[ji].deadline=dlInput.value;autoSave();};
     dlRow.append(dlLabel,dlInput);
-    const essayRow=document.createElement('div');essayRow.style.cssText='display:flex;align-items:flex-start;gap:6px';
-    const essayLabel=document.createElement('span');essayLabel.className='caption';essayLabel.style.flexShrink='0';essayLabel.textContent='자소서:';
-    const essayText=document.createElement('span');essayText.className='caption';essayText.style.cssText='flex:1;outline:none;color:var(--ink)';
-    essayText.textContent=job.essay||'(탭해서 입력)';
-    essayText.contentEditable=true;
-    essayText.addEventListener('blur',e=>{D.jobs[ji].essay=e.target.textContent.trim();autoSave();});
-    essayRow.append(essayLabel,essayText);
-    meta.append(dlRow,essayRow);card.appendChild(meta);
+    meta.append(dlRow);card.appendChild(meta);
 
+    // 체크리스트
     const sec=document.createElement('div');sec.style.cssText='border-top:0.5px solid var(--hairline);padding-top:10px';
+    const checkTitle=document.createElement('div');checkTitle.className='caption';checkTitle.style.cssText='font-weight:600;margin-bottom:6px';checkTitle.textContent='체크리스트';
+    sec.appendChild(checkTitle);
     (job.items||[]).forEach((item,ii)=>{
       const row=document.createElement('div');row.className='check-item';
       const chk=document.createElement('input');chk.type='checkbox';chk.className='check-box';chk.checked=item.done;
@@ -1387,7 +1452,30 @@ function renderJobs(){
     const inp=document.createElement('input');inp.id='ji-'+job.id;inp.className='field';inp.style.flex='1';inp.placeholder='체크리스트 항목 추가...';
     inp.onkeydown=e=>{if(e.key==='Enter')addJobItem(job.id)};
     const ab=document.createElement('button');ab.className='btn btn-primary btn-sm';ab.textContent='추가';ab.onclick=()=>addJobItem(job.id);
-    ar.append(inp,ab);sec.appendChild(ar);card.appendChild(sec);list.appendChild(card);
+    ar.append(inp,ab);sec.appendChild(ar);
+    card.appendChild(sec);
+
+    // 자소서 아카이브
+    const essaySec=document.createElement('div');essaySec.style.cssText='border-top:0.5px solid var(--hairline);padding-top:10px;margin-top:10px';
+    const essayTitle=document.createElement('div');essayTitle.className='caption';essayTitle.style.cssText='font-weight:600;margin-bottom:8px';essayTitle.textContent='자소서 아카이브';
+    essaySec.appendChild(essayTitle);
+    (job.essays||[]).forEach((es,ei)=>{
+      const esCard=document.createElement('div');esCard.style.cssText='background:var(--parchment);border-radius:10px;padding:12px;margin-bottom:8px';
+      const qIn=document.createElement('input');qIn.className='field';qIn.placeholder='문항 (예: 지원 동기를 작성해주세요)';qIn.value=es.question;qIn.style.marginBottom='8px';qIn.style.fontWeight='600';
+      qIn.addEventListener('blur',e=>{D.jobs[ji].essays[ei].question=e.target.value.trim();autoSave();});
+      const aArea=document.createElement('textarea');aArea.className='field';aArea.placeholder='작성한 답변을 붙여넣으세요...';aArea.value=es.answer;aArea.style.minHeight='100px';
+      aArea.addEventListener('blur',e=>{D.jobs[ji].essays[ei].answer=e.target.value.trim();autoSave();});
+      const esDel=document.createElement('button');esDel.className='del-btn';esDel.textContent='이 문항 삭제';esDel.style.cssText='font-size:12px;color:var(--red);margin-top:6px;display:block';
+      esDel.onclick=()=>{if(confirm('이 자소서 문항을 삭제할까요?')){D.jobs[ji].essays.splice(ei,1);autoSave();renderJobs();}};
+      esCard.append(qIn,aArea,esDel);
+      essaySec.appendChild(esCard);
+    });
+    const addEssayBtn=document.createElement('button');addEssayBtn.className='btn btn-ghost btn-sm btn-full';addEssayBtn.textContent='+ 자소서 문항 추가';
+    addEssayBtn.onclick=()=>addEssayEntry(job.id);
+    essaySec.appendChild(addEssayBtn);
+    card.appendChild(essaySec);
+
+    list.appendChild(card);
   });
 }
 
