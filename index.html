@@ -413,6 +413,13 @@ textarea.field:focus{border-color:var(--blue);outline:none}
       <div class="sum-card"><div class="sum-label">Balance</div><div class="sum-num bal" id="fin-balance">₩0</div></div>
     </div>
     <div style="margin-bottom:12px"><select class="select-field" id="fin-month-sel" onchange="render가계부()"></select></div>
+    <div class="card mb16" style="border-style:dashed">
+      <div class="sec-title-sm mb12">은행 거래내역 가져오기</div>
+      <div class="caption" style="margin-bottom:10px">카카오뱅크 거래내역 .xlsx 파일을 올리면 자동으로 분류돼요. 옷 판매 관련 거래(후루츠·당근·지마켓·입금)는 자동 제외됩니다.</div>
+      <input type="file" id="bank-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleBankFile(event)">
+      <button class="btn btn-ghost btn-full" onclick="document.getElementById('bank-file-input').click()">엑셀 파일 선택</button>
+      <div id="bank-import-status" style="margin-top:10px"></div>
+    </div>
     <div class="card mb16">
       <div class="sec-title-sm mb12">거래 추가</div>
       <div class="form-group"><label class="label">Description</label><input class="field" id="fin-desc" placeholder="예: 월급, 카페"></div>
@@ -534,6 +541,7 @@ textarea.field:focus{border-color:var(--blue);outline:none}
   <div id="job-list"></div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const CLIENT_ID='793879614355-tmtc0lfjfe9t7m9v5c71a81nv75dpg05.apps.googleusercontent.com';
 const SCOPE='https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar.readonly';
@@ -906,6 +914,107 @@ function initFinSel(){
   }
   render가계부();
 }
+/* 은행 거래내역 가져오기 (카카오뱅크) */
+const BANK_EXCLUDE_KEYWORDS=['후루츠','당근','지마켓','g마켓'];
+const BANK_CATEGORY_RULES=[
+  [['gs25','지에스25','씨유','이마트24','한솔마트','코레일유통','코레일네트웍스','다이소','아성다이소'],'cat_etc'],
+  [['스타벅스','더벤티','카페051','텐퍼센트커피','나우커피','뚜레쥬르','얼음꽁꽁'],'cat_food'],
+  [['맥도날드','육복원','매머드익스프레스','하루엔소쿠'],'cat_food'],
+  [['올리브영','약국'],'cat_health'],
+  [['롯데백화점','롯데쇼핑','롯데하이마트','쿠팡','에스에스지'],'cat_shopping'],
+  [['anthropic','perplexity','애플코리아'],'cat_sub'],
+  [['크린토피아'],'cat_etc'],
+  [['지에스네트웍스'],'cat_etc'],
+];
+function bankMapCategory(content,txnType){
+  if(txnType==='일반이체')return null;
+  const c=content.toLowerCase();
+  for(const [kws,cat] of BANK_CATEGORY_RULES){
+    for(const kw of kws){if(c.includes(kw))return cat;}
+  }
+  return 'cat_etc';
+}
+function bankIsExcluded(dir,content){
+  if(dir==='입금')return true;
+  const c=content.toLowerCase();
+  for(const kw of BANK_EXCLUDE_KEYWORDS){if(c.includes(kw))return true;}
+  return false;
+}
+function handleBankFile(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const statusEl=document.getElementById('bank-import-status');
+  statusEl.innerHTML='<div class="caption">파일 분석 중...</div>';
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array'});
+      const sheetName=wb.SheetNames[0];
+      const sheet=wb.Sheets[sheetName];
+      const rows=XLSX.utils.sheet_to_json(sheet,{header:1,raw:false});
+      // 헤더 행 찾기 ('거래일시' 포함된 행)
+      let headerRow=-1;
+      for(let i=0;i<rows.length;i++){
+        if(rows[i]&&rows[i].some(c=>String(c).includes('거래일시'))){headerRow=i;break;}
+      }
+      if(headerRow===-1){statusEl.innerHTML='<div class="caption" style="color:var(--red)">거래내역 형식을 인식할 수 없습니다</div>';return;}
+      const colIdx={};
+      rows[headerRow].forEach((h,i)=>{
+        const hs=String(h).trim();
+        if(hs.includes('거래일시'))colIdx.dt=i;
+        if(hs==='구분')colIdx.dir=i;
+        if(hs.includes('거래금액'))colIdx.amount=i;
+        if(hs.includes('거래구분'))colIdx.type=i;
+        if(hs==='내용')colIdx.content=i;
+      });
+      let imported=0,excluded=0,unclassified=0;
+      const newTxns=[];
+      for(let i=headerRow+1;i<rows.length;i++){
+        const row=rows[i];if(!row||!row[colIdx.dt])continue;
+        const dtStr=String(row[colIdx.dt]).trim();
+        const dir=String(row[colIdx.dir]||'').trim();
+        const amountRaw=String(row[colIdx.amount]||'0').replace(/,/g,'');
+        const amount=Math.abs(parseInt(amountRaw)||0);
+        const txnType=String(row[colIdx.type]||'').trim();
+        const content=String(row[colIdx.content]||'').trim();
+        if(!amount||!content)continue;
+        if(bankIsExcluded(dir,content)){excluded++;continue;}
+        const dateMatch=dtStr.match(/(\d{4})[.\-](\d{2})[.\-](\d{2})/);
+        if(!dateMatch)continue;
+        const month=`${dateMatch[1]}-${dateMatch[2]}`;
+        const dateStr=`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+        const catId=bankMapCategory(content,txnType);
+        if(!catId)unclassified++;
+        newTxns.push({
+          id:Date.now()+imported,
+          desc:content,
+          amount,
+          type:'expense',
+          month,
+          catId:catId||'unclassified',
+          date:dateStr,
+          source:'bank_import'
+        });
+        imported++;
+      }
+      // 미분류 카테고리가 없으면 생성
+      if(unclassified>0&&!D.categories.find(c=>c.id==='unclassified')){
+        D.categories.push({id:'unclassified',name:'미분류',color:'dot-gray'});
+      }
+      D.finance=D.finance.concat(newTxns);
+      autoSave();
+      populateCatSelects();
+      render가계부();
+      updateNetWorth();
+      statusEl.innerHTML=`<div class="caption" style="color:var(--green)">✓ ${imported}건 추가됨 (제외 ${excluded}건, 미분류 ${unclassified}건)</div>`;
+    }catch(err){
+      statusEl.innerHTML='<div class="caption" style="color:var(--red)">파일을 읽는 중 오류가 발생했습니다</div>';
+      console.error(err);
+    }
+    ev.target.value='';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
 function add가계부(){
   const desc=document.getElementById('fin-desc').value.trim();
   const amount=parseInt(document.getElementById('fin-amount').value);
